@@ -1,0 +1,85 @@
+<!-- https://www.w3schools.com/css/tryit.asp?filename=trycss_website_layout_grid -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>UVSA GROUP</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon"
+      type="image/png"
+      href="/static/favicon.png">
+<link rel="stylesheet" type="text/css" href="../static/uvsa_style.css">
+</head>
+
+
+<body>
+    <script src="/static/socket.io.js"></script>
+    <script src="/static/a076d05399.js"></script>
+
+
+<div class="column image">
+  <img class="logo" src="../static/UVSA_400.png" align="center" />
+  </div>
+
+  <div class="topnav">
+   <!-- <h2>HOME</h2>-->
+      <a href="/" title="Home"><i class='fas fa-home' style='font-size:160%'></i></a>
+      <a href="{{ url_for('diagnostico')}}" title="Diagnostico"><i class='fas fa-heartbeat' style='font-size:160%'></i></a>
+      <a href="{{ url_for('logs')}}" title="Logs"><i class='fas fa-database' style='font-size:160%'></i></a>
+      <a href="{{ url_for('ajustes')}}" title="Ajustes"><i class='fas fa-cogs' style='font-size:160%'></i></a>
+      <a href="{{ url_for('ayuda')}}" title="Ayuda"><i class='fas fa-question' style='font-size:160%'></i></a>
+      <a href="{{ url_for('acerca')}}" title="Acerca UVSA-Group"><i class='fas fa-info-circle' style='font-size:160%'></i></a>
+  </div>
+
+  <p class="column">
+    <!-- <h2 style="color:#100935">HOME</h2> -->
+
+      <!-- ***********   Tabla ID TIEMPO FECHA***********-->
+   <p class="center">
+       <table id="fancy_table" >
+          <tr>
+            <th  colspan="2" style="text-align:center">Temporizador</th>
+          </tr>
+
+        <tr>
+            <td style="text-align:center" ><b>Estado</b></td>
+            <td style="text-align:center"><b><i class='fas fa-hourglass-end' style='font-size:160%; color:grey'></i></b></td>
+
+        </tr>
+        <tr>
+                <td colspan="2" style="text-align:center; font-size:800%;color:#100935"><b><span id="timeLabel">---</span></b></td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align:center">
+                <i class='fas fa-clock' style='font-size:160%; color:#100935; vertical-align:middle'></i>
+                <span class="slidecontainer"  >
+                     <input type="range" min="1" max="120" value="5" class="istyle" id="myTimeRange">
+                </span>
+                 <b>
+                     <span style="vertical-align:middle; color:#100935" id="time_tag">
+                        --- min
+                     </span>
+                 </b>
+            </td>
+        </tr>
+        <tr>
+            <td  style="text-align:center">
+                <a href="javascript:startButton()" class="myButton"><i class='fas fa-play-circle' style="font-size:300%; color:'white'"></i></a>
+            </td>
+            <td style="text-align:center">
+                <a href="javascript:stopButton()" class="myButton"><i class='fas fa-stop-circle' style="font-size:300%; color:'white'"></i></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Fecha
+            </td>
+            <td>
+                Hora
+            </td>
+        </tr>
+    </table>
+    <script src="/static/index_websocket.js"></script>
+</body>
+</html>

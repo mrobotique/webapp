@@ -1,0 +1,24 @@
+https://fontawesome.com/v4.7.0/icons/
+
+Awesome fonts name reference
+ITEM        Icon name
+home        fas fa-home
+logs        fas fa-database
+settings    fas fa-cogs
+ayuda       fas fa-question
+acerca de   fas fa-info-circle
+
+boton(es)   fas fa-toggle-on fas fa-toggle-off (off-grey/on-green)
+PIR         fas fa-user (gray/red)
+Magnetic    fas fa-magnet (gray/green)
+lamp activa fas fa-lightbulb-o (gray/violet)
+ciclo       fas fa-hourglass/hourglass-o (violet/gray)
+tiempos     fas fa-clock
+start       fas fa-play-circle
+stop        fas fa-stop-circle
+
+Download    fas fa-download
+Borrar      fas fa-times
+Borrar todo fas fa-trash
+
+lanzar test fas fa-rocket

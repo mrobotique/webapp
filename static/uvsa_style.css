@@ -1,0 +1,245 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+/* Style the header */
+.header {
+  background-color: #ffffff;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #100935;
+  width: 100%;
+}
+
+/* Style the topnav links */
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change color on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Create three unequal columns that floats next to each other */
+.column {
+  float: left;
+  padding: 10px;
+  width: 85%;
+  height: 85%;
+}
+
+/* Main column */
+.column.main {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+}
+
+/* Image column */
+.column.image {
+  width: 100%;
+  height: 100%;
+  vertical-align: middle;
+}
+
+/* Header column */
+.column.header {
+  width: 85%;
+  height: 100%;
+}
+
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .column.side, .column.middle {
+    width: 100%;
+  }
+}
+
+/* Style the footer */
+.footer {
+  background-color: #100935;
+  color: #f2f2f2;
+  padding: 10px;
+  text-align: center;
+
+}
+
+/*img logo */
+img.logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width:40%;
+  height: auto;
+}
+
+.myButton {
+    box-shadow:inset 0px 0px 15px 3px #23395e;
+    background:linear-gradient(to bottom, #2e466e 5%, #415989 100%);
+    background-color:#2e466e;
+    border-radius:17px;
+    border:1px solid #1f2f47;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    font-family:Arial;
+    font-size:15px;
+    padding:6px 13px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #263666;
+}
+.myButton:hover {
+    background:linear-gradient(to bottom, #415989 5%, #2e466e 100%);
+    background-color:#415989;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+
+/*TABLAS*/
+#fancy_table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 85%;
+  table-layout: fixed;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+#fancy_table tr:nth-child(even){background-color: #f2f2f2;}
+
+#fancy_table td, #fancy_table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+    width: auto;
+  padding: 15px;
+}
+
+#fancy_table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #100935;
+  color: white;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/*Sliders*/
+input[type=range] {
+  -webkit-appearance: none;
+  margin: 10px 0;
+  width: 60%;
+  vertical-align:middle;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  animate: 0.2s;
+  box-shadow: 1px 1px 1px  #100935;
+  background: #0e082f;
+  border-radius: 5px;
+  border: 1px solid  #100935;
+}
+input[type=range]::-webkit-slider-thumb {
+  box-shadow: 1px 1px 1px #000000;
+  border: 1px solid #000000;
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  background: #a61dad;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -6px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #0e082f;
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  animate: 0.2s;
+  box-shadow: 1px 1px 1px  #100935;
+  background: #0e082f;
+  border-radius: 5px;
+  border: 1px solid  #100935;
+}
+input[type=range]::-moz-range-thumb {
+  box-shadow: 1px 1px 1px #000000;
+  border: 1px solid #000000;
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  background: #66498b;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #0e082f;
+  border: 1px solid  #100935;
+  border-radius: 10px;
+  box-shadow: 1px 1px 1px  #100935;
+}
+input[type=range]::-ms-fill-upper {
+  background: #0e082f;
+  border: 1px solid  #100935;
+  border-radius: 10px;
+  box-shadow: 1px 1px 1px  #100935;
+}
+input[type=range]::-ms-thumb {
+  box-shadow: 1px 1px 1px #000000;
+  border: 1px solid #000000;
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  background: #a61dad;
+  cursor: pointer;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #0e082f;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #0e082f;
+}

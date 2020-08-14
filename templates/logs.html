@@ -1,0 +1,68 @@
+<!-- https://www.w3schools.com/css/tryit.asp?filename=trycss_website_layout_grid -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>UVSA GROUP</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon"
+      type="image/png"
+      href="../static/favicon.png">
+<link rel="stylesheet" type="text/css" href="../static/uvsa_style.css">
+</head>
+
+
+<body>
+    <script src="/static/socket.io.js"></script>
+    <script src="/static/uvsa_websocket.js"></script>
+    <script src="/static/a076d05399.js"></script>
+
+<div class="header">
+<div class="column image">
+  <img class="logo" src="../static/UVSA_400.png" align="center" />
+  </div>
+  <div class="topnav">
+   <!-- <h2>HOME</h2>-->
+      <a href="/" title="Home"><i class='fas fa-home' style='font-size:160%'></i></a>
+      <a href="{{ url_for('diagnostico')}}" title="Diagnostico"><i class='fas fa-heartbeat' style='font-size:160%'></i></a>
+      <a href="{{ url_for('logs')}}" title="Logs"><i class='fas fa-database' style='font-size:160%'></i></a>
+      <a href="{{ url_for('ajustes')}}" title="Ajustes"><i class='fas fa-cogs' style='font-size:160%'></i></a>
+      <a href="{{ url_for('ayuda')}}" title="Ayuda"><i class='fas fa-question' style='font-size:160%'></i></a>
+      <a href="{{ url_for('acerca')}}" title="Acerca UVSA-Group"><i class='fas fa-info-circle' style='font-size:160%'></i></a>
+  </div>
+  </div>
+  <!-- <h2 style="color:#100935;  margin-bottom: 0px;" align="center">CENTRO DE DIAGNOSTICO</h2> -->
+  <p class="column">
+  <!-- ***********   Tabla ID TIEMPO FECHA***********-->
+   <p class="center">
+       <table id="fancy_table" >
+          <tr>
+            <th colspan="4" style="text-align:center">Informacion de Control</th>
+          </tr>
+        <tr>
+            <td style="text-align:center; width:25%"><b>Msg ID (x10)</b></td>
+            <td style="text-align:center; width:25%"><b>Modo de Operacion</b></td>
+            <td style="text-align:center; width:25%"><b>Fecha</b></td>
+            <td style="text-align:center; width:25%"><b>Hora</b></td>
+        </tr>
+        <tr>
+              <td style="text-align:center" ><span id="p1">Hello World!</span></td>
+              <td style="text-align:center" >0</td>
+              <td style="text-align:center" >FECHA</td>
+              <td style="text-align:center" >HORA</td>
+        </tr>
+    </table>
+</p>
+
+      <!-- Button example -->
+      <p>
+          <a href="javascript:myButton()" class="myButton">blue</a>
+      </p>
+      <!-- Text and send it -->
+      <p>
+          <a href="javascript:sendText()" class="myButton">Send Text</a>
+          Name: <input type="text" id="myText" value="Mickey">
+      </p>
+
+</body>
+</html>
