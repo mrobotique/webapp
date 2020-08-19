@@ -52,7 +52,7 @@
         </tr>
     </table>
 </p>
-    <form action="{{ url_for('ajustes') }}" method="post">
+    <form name="date_form" action="" method="post"  class="form_class" >
         <input type="hidden" name="name" value="FechaHora">
        <table id="fancy_table" >
           <tr>
@@ -67,14 +67,14 @@
             <td colspan="4" style="text-align:right;"><input type="date" id="fecha" name="fecha" required></td>
         </tr>
         <tr>
-            <td colspan="6" style="text-align:center;"><input type="submit" value="Ajustar" class="myButton"></td>
+            <td colspan="6" style="text-align:center;"><input type="button" value="Ajustar" class="myButton" onclick="submit_TimeData()"></td>
         </tr>
     </table>
 </form>
     </p>
 
    <p class="center">
-    <form action="{{ url_for('ajustes') }}" method="post" name="hardware">
+    <form name="hardware_form" action="" method="post"  class="form_class" >
         <input type="hidden" name="name" value="hardware">
     <table id="fancy_table" >
         <tr>
@@ -98,40 +98,46 @@
 
         <tr>
             <td colspan="4"style="text-align:center"><b>Lampara 2</b></td>
-            <td colspan="2"style="text-align:center"><label class="switch"><input type="checkbox" id="toggle_lampara2" name="lamp2">
+            <td colspan="2"style="text-align:center"><label class="switch">
+                <input type="checkbox" id="toggle_lampara2" name="lamp2">
                 <span class="slider round"></span></label>
             </td>
         </tr>
 
         <tr>
             <td colspan="4"style="text-align:center"><b>Lampara 3</b></td>
-            <td colspan="2"style="text-align:center"><label class="switch"><input type="checkbox" id="toggle_lampara3" name="lamp3">
+            <td colspan="2"style="text-align:center"><label class="switch">
+                <input type="checkbox" id="toggle_lampara3" name="lamp3">
                 <span class="slider round"></span></label>
             </td>
         </tr>
 
         <tr>
             <td colspan="4"style="text-align:center"><b>Lampara 4</b></td>
-            <td colspan="2"style="text-align:center"><label class="switch"><input type="checkbox" id="toggle_lampara4" name="lamp4">
+            <td colspan="2"style="text-align:center"><label class="switch">
+                <input type="checkbox" id="toggle_lampara4" name="lamp4">
                 <span class="slider round"></span></label>
             </td>
         </tr>
 
         <tr>
             <td colspan="4"style="text-align:center"><b>Lampara 5</b></td>
-            <td colspan="2"style="text-align:center"><label class="switch"><input type="checkbox" id="toggle_lampara5" name="lamp5">
+            <td colspan="2"style="text-align:center"><label class="switch">
+                <input type="checkbox" id="toggle_lampara5" name="lamp5">
                 <span class="slider round"></span></label>
             </td>
         </tr>
 
         <tr>
             <td colspan="4"style="text-align:center"><b>Lampara 6</b></td>
-            <td colspan="2"style="text-align:center"><label class="switch"><input type="checkbox" id="toggle_lampara6" name="lamp6">
+            <td colspan="2"style="text-align:center"><label class="switch">
+                <input type="checkbox" id="toggle_lampara6" name="lamp6">
                 <span class="slider round"></span></label>
             </td>
         </tr>
          <tr>
-             <td colspan="6" style="text-align:center;"><input type="submit" value="Configurar" class="myButton"></td>
+             <td colspan="6" style="text-align:center;">
+                 <input type="button" value="Configurar" class="myButton" onclick="submit_Conf()"></td>
         </tr>
         </table>
         </form>
@@ -141,6 +147,5 @@
           <a href="javascript:sendText()" class="myButton">Send Text</a>
          <br> Name: <input type="text" id="myText" value="Mickey">
       </p> -->
-
 </body>
 </html>

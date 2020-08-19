@@ -14,7 +14,7 @@
 
 <body>
     <script src="/static/socket.io.js"></script>
-    <script src="/static/uvsa_websocket.js"></script>
+    <script src="/static/logs_websocket.js"></script>
     <script src="/static/a076d05399.js"></script>
 
 <div class="header">
@@ -34,29 +34,30 @@
   <!-- <h2 style="color:#100935;  margin-bottom: 0px;" align="center">CENTRO DE DIAGNOSTICO</h2> -->
        <table id="fancy_table" style='font-size:160%;'>
           <tr>
-            <th colspan="1" style="text-align:center"><a href="javascript:startButton()" style="color:#FFFFFF;"><i class='fas fa-download'></i></a></th>
-            <th colspan="1" style="text-align:center"><a href="javascript:startButton()" style="color:#FFFFFF;"><i class='fas fa-trash'></i></a></th>
+            <th colspan="1" style="text-align:center"><a href="static/logs/database.csv" style="color:#FFFFFF;"><i class='fas fa-download'></i></a></th>
+            <th colspan="1" style="text-align:center"><a href="javascript:deleteButton()" style="color:#FFFFFF;"><i class='fas fa-trash'></i></a></th>
           </tr>
        </table>
   <!-- ***********   Tabla ID TIEMPO FECHA***********-->
    <p class="center">
-       <table id="fancy_table" >
+       <table id="fancy_table" style='font-size:2.5vw'>
           <tr>
-            <th colspan="12" style="text-align:center">Bitacora</th>
+            <th colspan="19" style="text-align:center" id="prueba">Bitacora</th>
           </tr>
         <tr>
-            <td colspan="2" style="text-align:center;"><b>Fecha</b></td>
-            <td colspan="2" style="text-align:center;"><b>Hora</b></td>
-            <td colspan="2" style="text-align:center;"><b>Expo</b></td>
-            <td colspan="6" style="text-align:center;"><b>Ubicacion</b></td>
+            <td colspan="3" style="text-align:center;"><b>Fecha</b></td>
+            <td colspan="3" style="text-align:center;"><b>Hora</b></td>
+            <td colspan="3" style="text-align:center;"><b>Expo</b></td>
+            <td colspan="7" style="text-align:center;"><b>Ubicacion</b></td>
+            <td colspan="3" style="text-align:center;"><i class='fas fa-trash'></i></td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align:center;"> </td>
-            <td colspan="2" style="text-align:center;"> </td>
-            <td colspan="2" style="text-align:center;"> </td>
-            <td colspan="6" style="text-align:center;"> </td>
+            <td colspan="3" style="text-align:center;"> </td>
+            <td colspan="3" style="text-align:center;"> </td>
+            <td colspan="3" style="text-align:center;"> </td>
+            <td colspan="7" style="text-align:center;"> </td>
+            <td colspan="3" style="text-align:center;"><input type="checkbox" name="01"> </td>
         </tr>
-
     </table>
 </p>
 
