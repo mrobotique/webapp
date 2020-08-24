@@ -14,7 +14,7 @@
 
 <body>
     <script src="/static/socket.io.js"></script>
-    <script src="/static/uvsa_websocket.js"></script>
+   <script src="/static/ajustes_websocket.js"></script>
     <script src="/static/a076d05399.js"></script>
 
 <div class="header">
@@ -31,38 +31,116 @@
       <a href="{{ url_for('acerca')}}" title="Acerca UVSA-Group"><i class='fas fa-info-circle' style='font-size:160%'></i></a>
   </div>
   </div>
-  <!-- <h2 style="color:#100935;  margin-bottom: 0px;" align="center">CENTRO DE DIAGNOSTICO</h2> -->
-  <p class="column">
+    <h2 style="color:#100935;  margin-bottom: 0px; margin-top: 0px;" align="center">PANEL DE CONTROL</h2>
   <!-- ***********   Tabla ID TIEMPO FECHA***********-->
    <p class="center">
-       <table id="fancy_table" >
+      <!-- ***********   Tabla ID TIEMPO FECHA***********-->
+   <p class="center">
+       <table id="fancy_table" style=" font-size:90%;">
           <tr>
-            <th colspan="4" style="text-align:center">Informacion de Control</th>
+            <th colspan="3" style="text-align:center">Informacion de Sistema</th>
           </tr>
         <tr>
-            <td style="text-align:center; width:25%"><b>Msg ID (x10)</b></td>
-            <td style="text-align:center; width:25%"><b>Modo de Operacion</b></td>
+            <td style="text-align:center; width:25%;"><b>Msg ID</b></td>
             <td style="text-align:center; width:25%"><b>Fecha</b></td>
             <td style="text-align:center; width:25%"><b>Hora</b></td>
         </tr>
         <tr>
-              <td style="text-align:center" ><span id="p1">Hello World!</span></td>
-              <td style="text-align:center" >0</td>
-              <td style="text-align:center" >FECHA</td>
-              <td style="text-align:center" >HORA</td>
+              <td style="text-align:center" ><span id="msg_id">------</span></td>
+              <td style="text-align:center" ><span id="date">------</span></td>
+              <td style="text-align:center" ><span id="time">------</span></td>
         </tr>
     </table>
 </p>
+    <form action="{{ url_for('ajustes') }}" method="post">
+        <input type="hidden" name="name" value="FechaHora">
+       <table id="fancy_table" >
+          <tr>
+            <th colspan="6" style="text-align:center"> Ajuste de Fecha y Hora</th>
+          </tr>
+        <tr>
+            <td colspan="2" style="text-align:center;"><b>Hora</b></td>
+            <td colspan="4" style="text-align:right;"><input type="time" id="hora" name="hora" required></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:center;"><b>Fecha</b></td>
+            <td colspan="4" style="text-align:right;"><input type="date" id="fecha" name="fecha" required></td>
+        </tr>
+        <tr>
+            <td colspan="6" style="text-align:center;"><input type="submit" value="Ajustar" class="myButton"></td>
+        </tr>
+    </table>
+</form>
+    </p>
 
-      <!-- Button example -->
-      <p>
-          <a href="javascript:myButton()" class="myButton">blue</a>
-      </p>
-      <!-- Text and send it -->
+   <p class="center">
+    <form action="{{ url_for('ajustes') }}" method="post" name="hardware">
+        <input type="hidden" name="name" value="hardware">
+    <table id="fancy_table" >
+        <tr>
+            <th colspan="6" style="text-align:center">Control de Hardware</th>
+        </tr>
+        <tr>
+            <td colspan="4"style="text-align:center"><b>Buzzer</b></td>
+            <td colspan="2"style="text-align:center"><label class="switch">
+                <input type="checkbox" id="toggle_buzzer" name="buzzer">
+                <span class="slider round"></span></label>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4"style="text-align:center"><b>Lampara 1</b></td>
+            <td colspan="2"style="text-align:center"><label class="switch">
+                <input type="checkbox" id="toggle_lampara1" name="lamp1">
+                <span class="slider round"></span></label>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4"style="text-align:center"><b>Lampara 2</b></td>
+            <td colspan="2"style="text-align:center"><label class="switch"><input type="checkbox" id="toggle_lampara2" name="lamp2">
+                <span class="slider round"></span></label>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4"style="text-align:center"><b>Lampara 3</b></td>
+            <td colspan="2"style="text-align:center"><label class="switch"><input type="checkbox" id="toggle_lampara3" name="lamp3">
+                <span class="slider round"></span></label>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4"style="text-align:center"><b>Lampara 4</b></td>
+            <td colspan="2"style="text-align:center"><label class="switch"><input type="checkbox" id="toggle_lampara4" name="lamp4">
+                <span class="slider round"></span></label>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4"style="text-align:center"><b>Lampara 5</b></td>
+            <td colspan="2"style="text-align:center"><label class="switch"><input type="checkbox" id="toggle_lampara5" name="lamp5">
+                <span class="slider round"></span></label>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4"style="text-align:center"><b>Lampara 6</b></td>
+            <td colspan="2"style="text-align:center"><label class="switch"><input type="checkbox" id="toggle_lampara6" name="lamp6">
+                <span class="slider round"></span></label>
+            </td>
+        </tr>
+         <tr>
+             <td colspan="6" style="text-align:center;"><input type="submit" value="Configurar" class="myButton"></td>
+        </tr>
+        </table>
+        </form>
+   </p>
+      <!-- Text and send it
       <p>
           <a href="javascript:sendText()" class="myButton">Send Text</a>
-          Name: <input type="text" id="myText" value="Mickey">
-      </p>
+         <br> Name: <input type="text" id="myText" value="Mickey">
+      </p> -->
 
 </body>
 </html>

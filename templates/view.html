@@ -1,0 +1,44 @@
+<html>
+<body>
+	<div id="links"></div>
+	<h1 id="title"></h1>
+	<div id="mychartcontainer">
+		
+	</div>
+	<script src="static/jquery-1.12.4.min.js"></script>
+	<script src="static/Chart.js"></script>
+
+	<script type="text/javascript">
+		$(function(){
+		
+			Chart.defaults.global.responsive = true;
+			Chart.defaults.global.maintainAspectRatio = false;
+			
+			$("#links").on("click", "a", function(){
+				var file = $(this).data("file");
+				
+				$("#title").html(file);
+				$.getJSON("../data/" + file, function(response){
+				
+				$("#mychart").remove();
+				$("#mychartcontainer").append("<canvas id=\"mychart\" width=\"100%\" height=\"400\"></canvas>")
+				
+				var ctx = document.getElementById("mychart").getContext("2d");
+				var myLineChart = new Chart(ctx).Line(response.data);
+				});
+				
+			});
+			
+			$.getJSON("../logfiles", function(response)
+			{
+				$(response).each(function(i,s)
+				{
+					$("#links").append("<a href=\"javascript:void(0)\" data-file=" + s + ">" + s + "</a>&nbsp;");
+				});
+			});
+			
+			
+		});
+	</script>
+</body>
+</html>

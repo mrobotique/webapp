@@ -99,9 +99,9 @@ img.logo {
 }
 
 .myButton {
-    box-shadow:inset 0px 0px 15px 3px #23395e;
-    background:linear-gradient(to bottom, #2e466e 5%, #415989 100%);
-    background-color:#2e466e;
+    box-shadow:inset 0px 0px 15px 3px #100935;
+    background:linear-gradient(to bottom, #100935 5%, #100935 100%);
+    background-color:#100935;
     border-radius:17px;
     border:1px solid #1f2f47;
     display:inline-block;
@@ -109,14 +109,11 @@ img.logo {
     color:#ffffff;
     font-family:Arial;
     font-size:15px;
-    padding:6px 13px;
+    padding:6px 100px;
     text-decoration:none;
     text-shadow:0px 1px 0px #263666;
 }
-.myButton:hover {
-    background:linear-gradient(to bottom, #415989 5%, #2e466e 100%);
-    background-color:#415989;
-}
+
 .myButton:active {
     position:relative;
     top:1px;
@@ -242,4 +239,81 @@ input[type=range]:focus::-ms-fill-lower {
 }
 input[type=range]:focus::-ms-fill-upper {
   background: #0e082f;
+}
+
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #66498b;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #66498b;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(30px);
+  -ms-transform: translateX(30px);
+  transform: translateX(30px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }

@@ -20,7 +20,7 @@ https://fontawesome.com/v4.7.0/icons/
     <script src="/static/diagnostic_websocket.js"></script>
     <script src="/static/a076d05399.js"></script>
 
-<div class="header">
+
 <div class="column image">
   <img class="logo" src="../static/UVSA_400.png" align="center" />
   </div>
@@ -32,27 +32,20 @@ https://fontawesome.com/v4.7.0/icons/
       <a href="{{ url_for('ajustes')}}" title="Ajustes"><i class='fas fa-cogs' style='font-size:160%'></i></a>
       <a href="{{ url_for('ayuda')}}" title="Ayuda"><i class='fas fa-question' style='font-size:160%'></i></a>
       <a href="{{ url_for('acerca')}}" title="Acerca UVSA-Group"><i class='fas fa-info-circle' style='font-size:160%'></i></a>
+
   </div>
-  </div>
+
   <h2 style="color:#100935;  margin-bottom: 0px;" align="center">CENTRO DE DIAGNOSTICO</h2>
-  <p class="column">
+  <p class="column" style="padding:0px;">
   <!-- ***********   Tabla ID TIEMPO FECHA***********-->
    <p class="center">
-       <table id="fancy_table" >
+       <table id="fancy_table" style=" font-size:90%;">
           <tr>
             <th colspan="4" style="text-align:center">Informacion de Control</th>
           </tr>
-          <tr>
-            <td style="text-align:center" ><span><b>Firmware:</b></span></td>
-            <td colspan="3" style="text-align:center" ><span id="version">------</span></td>
-        </tr>
         <tr>
-            <td style="text-align:center" ><span><b>Tarjeta:</b></span></td>
-            <td colspan="3" style="text-align:center"><span id="card">------</span></td>
-        </tr>
-        <tr>
-            <td style="text-align:center; width:25%"><b>Msg ID</b></td>
-            <td style="text-align:center; width:25%"><b>Modo de Operacion</b></td>
+            <td style="text-align:center; width:25%;"><b>Msg ID</b></td>
+            <td style="text-align:center; width:25%;"><b>Modo</b></td>
             <td style="text-align:center; width:25%"><b>Fecha</b></td>
             <td style="text-align:center; width:25%"><b>Hora</b></td>
         </tr>
@@ -66,25 +59,25 @@ https://fontawesome.com/v4.7.0/icons/
 </p>
 
 <!-- ***********   Tabla Sensores ***********-->
-    <p class="center"><table id="fancy_table" >
+    <p class="center"><table id="fancy_table" style=" font-size:90%;">
   <tr>
-    <th>Sensor</th>
+    <th colspan="2">Sensor</th>
     <th colspan="4" style="text-align:center">Estado</th>
   </tr>
 <tr>
-  	<td style="text-align:left"><b>Auto</b></td>
+  	<td colspan="2" style="text-align:left"><b>Auto</b></td>
     <td style="text-align:center" colspan="4" id="auto"><i class="fas fa-power-off" style='font-size:24px;color:gray'></i></td>
 </tr>
 
 <tr>
-  	<td style="text-align:left"><b>Deadman</b></td>
+  	<td colspan="2" style="text-align:left"><b>Deadman</b></td>
     <td style="text-align:center" colspan="2" id="deadman1"><i class="fas fa-power-off" style='font-size:24px;color:gray'></i></td>
     <td style="text-align:center" colspan="2" id="deadman2"><i class="fas fa-power-off" style='font-size:24px;color:gray'></i></td>
 </tr>
 
 
 <tr>
-    <td style="text-align:left"><b>PIR</b></td>
+    <td colspan="2"  style="text-align:left"><b>PIR</b></td>
     <td style="text-align:center" id="pir1"><i class="fas fa-user" style='font-size:24px;color:red'></i></td>
     <td style="text-align:center" id="pir2"><i class="fas fa-user" style='font-size:24px;color:red'></i></td>
     <td style="text-align:center" id="pir3"><i class="fas fa-user" style='font-size:24px;color:red'></i></td>
@@ -92,7 +85,7 @@ https://fontawesome.com/v4.7.0/icons/
   </tr>
 
 <tr>
-  	<td style="text-align:left"><b>Magneticos</b></td>
+  	<td colspan="2"  style="text-align:left"><b>Magneticos</b></td>
     <td style="text-align:center" colspan="2" id="mag1"><i class="fas fa-magnet" style='font-size:24px;color:red'></i></td>
     <td style="text-align:center" colspan="2" id="mag2"><i class="fas fa-magnet" style='font-size:24px;color:red'></i></td>
 </tr>
@@ -102,7 +95,7 @@ https://fontawesome.com/v4.7.0/icons/
 
 
 <!-- ***********   Tabla Lamparas ***********-->
-   <p class="center"><table id="fancy_table" >
+   <p class="center"><table id="fancy_table" style=" font-size:90%;">
   <tr>
     <th colspan="6" style="text-align:center">Lamparas</th>
   </tr>
@@ -128,7 +121,7 @@ https://fontawesome.com/v4.7.0/icons/
 </p>
 
  <!-- ***********   Tabla Indicadores ***********-->
-   <p class="center"><table id="fancy_table" >
+   <p class="center"><table id="fancy_table" style=" font-size:90%;">
   <tr>
     <th colspan="3" style="text-align:center">Indicadores</th>
   </tr>

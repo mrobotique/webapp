@@ -14,7 +14,7 @@
 
 <body>
     <script src="/static/socket.io.js"></script>
-    <script src="/static/uvsa_websocket.js"></script>
+    <script src="/static/acerca_websocket.js"></script>
     <script src="/static/a076d05399.js"></script>
 
 <div class="header">
@@ -31,38 +31,36 @@
       <a href="{{ url_for('acerca')}}" title="Acerca UVSA-Group"><i class='fas fa-info-circle' style='font-size:160%'></i></a>
   </div>
   </div>
-  <!-- <h2 style="color:#100935;  margin-bottom: 0px;" align="center">CENTRO DE DIAGNOSTICO</h2> -->
-  <p class="column">
-  <!-- ***********   Tabla ID TIEMPO FECHA***********-->
+   <h2 style="color:#100935;  margin-bottom: 0px;" align="center" id="modelo">MODELO</h2>
    <p class="center">
-       <table id="fancy_table" >
+       <table id="fancy_table" style=" font-size:90%;">
           <tr>
-            <th colspan="4" style="text-align:center">Informacion de Control</th>
+            <th colspan="4" style="text-align:center">Acerca de</th>
           </tr>
         <tr>
-            <td style="text-align:center; width:25%"><b>Msg ID (x10)</b></td>
-            <td style="text-align:center; width:25%"><b>Modo de Operacion</b></td>
-            <td style="text-align:center; width:25%"><b>Fecha</b></td>
-            <td style="text-align:center; width:25%"><b>Hora</b></td>
+            <td colspan="1" style="text-align:center" ><span><i class='fas fa-user-clock' style='font-size:160%'></span></td>
+            <td colspan="3" style="text-align:center"><b><span id="horometro">------</span></b></td>
+        </tr>
+          <tr>
+            <td colspan="1" style="text-align:center" ><span><i class='fas fa-magic' style='font-size:160%'></span></td>
+            <td colspan="3" style="text-align:center" ><b><span id="version">------</span></b></td>
         </tr>
         <tr>
-              <td style="text-align:center" ><span id="p1">Hello World!</span></td>
-              <td style="text-align:center" >0</td>
-              <td style="text-align:center" >FECHA</td>
-              <td style="text-align:center" >HORA</td>
+            <td style="text-align:center" ><span><i class='fas fa-robot' style='font-size:160%'></span></td>
+            <td colspan="3" style="text-align:center"><b><span id="card">------</span></b></td>
+        </tr>
+        <tr>
+            <td style="text-align:center; font-size:160%" ><span><b>SN</b></span></td>
+            <td colspan="3" style="text-align:center"><b><span id="serialNumber">------</span></b></td>
+        </tr>
+        <tr>
+            <td style="text-align:center" ><span><i class='fas fa-mail-bulk' style='font-size:160%'></span></td>
+            <td colspan="3" style="text-align:center"><b><a href="mailto:name@email.com">ventas@uvsafe.com.mx</a></b></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align:center"><img src="/static/uvsafe_qrcode.png"  alt="UVSA Group QR Code" style="width:40%"></td>
         </tr>
     </table>
 </p>
-
-      <!-- Button example -->
-      <p>
-          <a href="javascript:myButton()" class="myButton">blue</a>
-      </p>
-      <!-- Text and send it -->
-      <p>
-          <a href="javascript:sendText()" class="myButton">Send Text</a>
-          Name: <input type="text" id="myText" value="Mickey">
-      </p>
-
 </body>
 </html>

@@ -31,7 +31,7 @@
       <a href="{{ url_for('acerca')}}" title="Acerca UVSA-Group"><i class='fas fa-info-circle' style='font-size:160%'></i></a>
   </div>
 
-  <p class="column">
+  <p class="column" style="padding:0px;">
     <!-- <h2 style="color:#100935">HOME</h2> -->
 
       <!-- ***********   Tabla ID TIEMPO FECHA***********-->
@@ -43,11 +43,11 @@
 
         <tr>
             <td style="text-align:center" ><b>Estado</b></td>
-            <td style="text-align:center"><b><i class='fas fa-hourglass-end' style='font-size:160%; color:grey'></i></b></td>
+            <td style="text-align:center" id="operationMode"><i class='fas fa-hourglass-end' style='font-size:160%; color:grey'></i></td>
 
         </tr>
         <tr>
-                <td colspan="2" style="text-align:center; font-size:800%;color:#100935"><b><span id="timeLabel">---</span></b></td>
+                <td colspan="2" style="text-align:center; font-size:450%;color:#100935"><b><span id="tiempoRestante">---</span></b></td>
         </tr>
 
         <tr>
@@ -64,20 +64,18 @@
             </td>
         </tr>
         <tr>
-            <td  style="text-align:center">
-                <a href="javascript:startButton()" class="myButton"><i class='fas fa-play-circle' style="font-size:300%; color:'white'"></i></a>
+            <td colspan="2" style="text-align:center">
+                <a href="javascript:startButton()" class="myButton" id="main_button"><i class="fa fa-sun" aria-hidden="true" style="font-size:300%; color:'white'"></i></a>
             </td>
-            <td style="text-align:center">
-                <a href="javascript:stopButton()" class="myButton"><i class='fas fa-stop-circle' style="font-size:300%; color:'white'"></i></a>
-            </td>
+
         </tr>
         <tr>
-            <td>
-                Fecha
-            </td>
-            <td>
-                Hora
-            </td>
+            <td style="text-align:center; width:25%"><b>Fecha</b></td>
+            <td style="text-align:center; width:25%"><b>Hora</b></td>
+        </tr>
+        <tr>
+            <td style="text-align:center" ><span id="date">------</span></td>
+            <td style="text-align:center" ><span id="time">------</span></td>
         </tr>
     </table>
     <script src="/static/index_websocket.js"></script>

@@ -6,8 +6,6 @@ socket.on('my_response', function(message) {
     document.getElementById("operationMode").innerHTML = message.operationMode;
     document.getElementById("date").innerHTML = message.date;
     document.getElementById("time").innerHTML = message.time;
-    document.getElementById("version").innerHTML = message.version;
-    document.getElementById("card").innerHTML = message.card;
     /*AUTO*/
     if(message.auto == 0){
         document.getElementById("auto").innerHTML = "<i class=\"fas fa-power-off\" style='font-size:24px;color:green'>";
@@ -130,7 +128,7 @@ socket.on('my_response', function(message) {
         document.getElementById("lampDeadman").innerHTML = "<i class=\"fas fa-lightbulb\" style='font-size:24px;color:purple'>";
     }
      /*Buzzer*/
-    if(message.lamp6 == 0){
+    if(message.buzzer == 0){
         document.getElementById("buzzer").innerHTML = "<i class=\"fas fa-volume-off\" style='font-size:24px;color:gray'>";
     }
     else{
