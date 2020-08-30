@@ -21,10 +21,15 @@ socket.on('my_response', function(message) {
     var min = Math.floor((tiempo - (hr*3600))/60);
     var sec = tiempo - (min * 60);
     document.getElementById("tiempoRestante").innerHTML = ('0'  + hr).slice(-2)+':'+('0'  + min).slice(-2)+':'+('0' + sec).slice(-2);
+    if(!isNaN(message.count_down)){
+    document.getElementById("count_down").value = message.count_down;
+    }
     });
 
 function startButton(){
-    socket.emit('startButton',{'time':slider.value * 60});
+    var flag_time = 1;
+    var flag_hardware = 0;
+    socket.emit('startButton',{'time':[flag_time, slider.value * 60], 'mask':[flag_hardware, 0]});
 }
 
 // Update the current slider value (each time you drag the slider handle)

@@ -11,7 +11,7 @@ import serial
 import json
 
 
-ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
 ser.setRTS(False)
 ser.setDTR(False)
 ser.read_all()
@@ -30,11 +30,12 @@ uvsa_dict = {}
 
 
 def background_serial_reader_thread():
+    # pass
     """Example of how to send server generated events to clients."""
     last_pub = 0
     uvsa_key=['msg_id', 'version', 'card', 'deadman1', 'deadman2', 'auto', 'pir1', 'pir2', 'pir3', 'pir4', 'mag1',
               'mag2', 'lamp1', 'lamp2', 'lamp3', 'lamp4', 'lamp5', 'lamp6', 'lampDeadman', 'lampAuto', 'buzzer',
-              'operationMode', 'tiempoRestante']
+              'operationMode', 'tiempoRestante', 'mask_byte', 'count_down']
 
     decoded_data = []
 
@@ -43,12 +44,12 @@ def background_serial_reader_thread():
             ser_data = ser.readline().decode('utf8')[:-2]
         except UnicodeDecodeError:
             pass
-
         try:
             decoded_data = ser_data.split(":")[1][1:-2].split(',')
+
         except IndexError:
             print("index error")
-            pass
+
         if len(uvsa_key) == len(decoded_data): #El primer paquete despues de inicializar tiene basura... por eso se filtra aqui
             for i in range(len(uvsa_key)):
                 try:
@@ -128,7 +129,7 @@ def test_button():
 
 @socketio.on('startButton')
 def start_button(msg):
-    print("start Button", json.dumps(msg))
+    #print("start Button", json.dumps(msg))
     ser.write((json.dumps(msg) + '\r\n').encode())
 
 
@@ -157,7 +158,15 @@ def set_hardwareConfig(msg):
 
 @socketio.on('request_toggle_status')
 def set_toggle_status():
-    emit('set_toggle_status', uvsa_dict['buzzer'])
+    mask_byte = {}
+    mask_byte['buzzer'] = uvsa_dict['mask_byte'] & 0b00000001
+    mask_byte['lamp_1'] = uvsa_dict['mask_byte'] & 0b00000010
+    mask_byte['lamp_2'] = uvsa_dict['mask_byte'] & 0b00000100
+    mask_byte['lamp_3'] = uvsa_dict['mask_byte'] & 0b00001000
+    mask_byte['lamp_4'] = uvsa_dict['mask_byte'] & 0b00010000
+    mask_byte['lamp_5'] = uvsa_dict['mask_byte'] & 0b00100000
+    mask_byte['lamp_6'] = uvsa_dict['mask_byte'] & 0b01000000
+    emit('set_toggle_status', mask_byte)
 
 
 if __name__ == '__main__':

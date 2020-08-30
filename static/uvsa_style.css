@@ -317,3 +317,22 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+/* Progressbar */
+progress {
+	appearance: none;
+	display: block;
+	width: 90%;
+	height: 1rem;
+	/*border: 0;*/
+	margin: 0px auto;
+}
+
+progress::-webkit-progress-bar {
+	background: lightgray;
+}
+
+progress::-webkit-progress-value {
+	background: #100935;
+	transition: width 0s ease-in-out;
+}

@@ -45,12 +45,22 @@ function submit_Conf() {
     var lampara4 = document.getElementById("toggle_lampara4").checked;
     var lampara5 = document.getElementById("toggle_lampara5").checked;
     var lampara6 = document.getElementById("toggle_lampara6").checked;
-    socket.emit("set_hardwareConfig",{"buzzer":buzzer, "lampara1":lampara1, "lampara2":lampara2, "lampara3":lampara3,
-                "lampara4":lampara4, "lampara5":lampara5, "lampara6":lampara6});
+    var hardware_byte = buzzer + 2 * lampara1 + 4 * lampara2 + 8 * lampara3 + 16 * lampara4 + 32 * lampara5 + 64 * lampara6
+    var flag_time = 0;
+    var flag_hardware = 1;
+    socket.emit('startButton',{'time':[flag_time,0], 'mask':[flag_hardware, hardware_byte]});
 };
 
 socket.on('set_toggle_status', function(msg){
-    document.getElementById("toggle_buzzer").checked = msg; //msg es int pero si funciona 1/0 como true/false
+    console.log(msg);
+    document.getElementById("toggle_buzzer").checked = msg.buzzer; //msg es int pero si funciona 1/0 como true/false
+    document.getElementById("toggle_lampara1").checked = msg.lamp_1; //msg es int pero si funciona 1/0 como true/false
+    document.getElementById("toggle_lampara2").checked = msg.lamp_2; //msg es int pero si funciona 1/0 como true/false
+    document.getElementById("toggle_lampara3").checked = msg.lamp_3; //msg es int pero si funciona 1/0 como true/false
+    document.getElementById("toggle_lampara4").checked = msg.lamp_4; //msg es int pero si funciona 1/0 como true/false
+    document.getElementById("toggle_lampara5").checked = msg.lamp_5; //msg es int pero si funciona 1/0 como true/false
+    document.getElementById("toggle_lampara6").checked = msg.lamp_6; //msg es int pero si funciona 1/0 como true/false
+
 });
 
 socket.on('setDateResponse', function(msg){
