@@ -9,9 +9,10 @@ import subprocess
 from datetime import datetime
 import serial
 import json
+import yaml
 
 
-ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+ser = serial.Serial('/dev/ttyUSB0', 19200, timeout=1)
 ser.setRTS(False)
 ser.setDTR(False)
 ser.read_all()
@@ -34,21 +35,22 @@ def background_serial_reader_thread():
     """Example of how to send server generated events to clients."""
     last_pub = 0
     uvsa_key=['msg_id', 'version', 'card', 'deadman1', 'deadman2', 'auto', 'pir1', 'pir2', 'pir3', 'pir4', 'mag1',
-              'mag2', 'lamp1', 'lamp2', 'lamp3', 'lamp4', 'lamp5', 'lamp6', 'lampDeadman', 'lampAuto', 'buzzer',
-              'operationMode', 'tiempoRestante', 'mask_byte', 'count_down']
+              'mag2', 'lamp_byte', 'horometro', 'buzzer', 'operationMode', 'tiempoRestante', 'mask_byte', 'count_down']
 
     decoded_data = []
 
     while True:
         try:
             ser_data = ser.readline().decode('utf8')[:-2]
+            print(ser_data)
         except UnicodeDecodeError:
             pass
+
         try:
             decoded_data = ser_data.split(":")[1][1:-2].split(',')
-
         except IndexError:
             print("index error")
+
 
         if len(uvsa_key) == len(decoded_data): #El primer paquete despues de inicializar tiene basura... por eso se filtra aqui
             for i in range(len(uvsa_key)):
@@ -62,10 +64,20 @@ def background_serial_reader_thread():
                             uvsa_dict[uvsa_key[i]] = 0
                         else:
                             uvsa_dict[uvsa_key[i]] = decoded_data[i][1:-1]
+
             uvsa_dict['date'] = str(datetime.date(datetime.now()))
             uvsa_dict['time'] = str(datetime.time(datetime.now())).split('.')[0]
+            #Decodificar lamparas
+            uvsa_dict['lamp1'] = uvsa_dict['lamp_byte'] & 0b00000001
+            uvsa_dict['lamp2'] = uvsa_dict['lamp_byte'] & 0b00000010
+            uvsa_dict['lamp3'] = uvsa_dict['lamp_byte'] & 0b00000100
+            uvsa_dict['lamp4'] = uvsa_dict['lamp_byte'] & 0b00001000
+            uvsa_dict['lamp5'] = uvsa_dict['lamp_byte'] & 0b00010000
+            uvsa_dict['lamp6'] = uvsa_dict['lamp_byte'] & 0b00100000
+            uvsa_dict['lampDeadman'] = uvsa_dict['lamp_byte'] & 0b01000000
+            uvsa_dict['lampAuto'] = uvsa_dict['lamp_byte'] & 0b10000000
+
             #  ToDo Un Horometro de verdad
-            uvsa_dict['horometro'] = 501
             socketio.sleep(0.02)
             pub = int(float(uvsa_dict['msg_id'])/100)
             if pub != last_pub:
@@ -108,7 +120,9 @@ def acerca():
 def acerca_info():
     # ToDo Hacer el archivo YAML para recuperar el numero de serie y el modelo desde el archivo que produccion
     # ToDo debe de llenar.
-    fabricacion_dict = {'serialNumber':1234567890, 'modelo': "UVSA - I"}
+    with open("/home/uv/.uvsa-config/model_sn.yaml") as f:
+        data = yaml.load(f, Loader=yaml.FullLoader)
+    fabricacion_dict = {'serialNumber':data['Serial'], 'modelo':data['Model']}
     socketio.emit('info_fabricacion', fabricacion_dict)
 
 
@@ -120,11 +134,6 @@ def test_connect():
         if thread is None:
             thread = socketio.start_background_task(background_serial_reader_thread)
     emit('my_response', {'data': 'Connected', 'count': 0})
-
-
-@socketio.on('myButton')
-def test_button():
-    print("myButton")
 
 
 @socketio.on('startButton')
@@ -145,15 +154,6 @@ def set_datetime(msg):
     msg = str(proc.communicate()[0], 'utf-8')
     proc = subprocess.Popen(['sudo', 'hwclock', '-w'], stdout=subprocess.PIPE)
     emit('setDateResponse', msg)
-
-
-@socketio.on('set_hardwareConfig')
-def set_hardwareConfig(msg):
-    """
-    :param msg:
-    :return:
-    """
-    print(msg)
 
 
 @socketio.on('request_toggle_status')
