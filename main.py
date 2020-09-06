@@ -120,7 +120,7 @@ def acerca():
 def acerca_info():
     # ToDo Hacer el archivo YAML para recuperar el numero de serie y el modelo desde el archivo que produccion
     # ToDo debe de llenar.
-    with open("/home/uv/.uvsa-config/model_sn.yaml") as f:
+    with open("/etc/uvsa/model_sn.yaml") as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
     fabricacion_dict = {'serialNumber':data['Serial'], 'modelo':data['Model']}
     socketio.emit('info_fabricacion', fabricacion_dict)
