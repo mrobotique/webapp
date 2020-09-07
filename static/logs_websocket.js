@@ -6,15 +6,39 @@ window.onload = function() {
         socket.emit('connect');
 };
 
+socket.on('reload_log', function(){
+    location.reload();
+});
+
 function deleteButton(){
   var txt;
   if (confirm("Esta accion borrara la base de datos de manera definitiva!")) {
-    txt = "You pressed OK!";
     socket.emit('delete_file')
-  } else {
-    txt = "You pressed Cancel!";
   }
-  document.getElementById("prueba").innerHTML = txt;
+}
+
+function deleteSelected(){
+  var txt;
+  var total_rows = document.getElementsByName("tabla_bitacora")[0].rows.length;
+  var data_rows = total_rows - 2; //menos el titulo y el heading
+
+  if (confirm("Esta accion borrara los elementos seleccionados de manera definitiva!")) {
+    var i;
+    var result = []
+    for (i = 1; i <= data_rows; i++)
+    {
+       if (document.getElementById("check_" + i.toString()).checked )
+       {
+        result.push(1);
+       }
+       else
+       {
+        result.push(0)
+       }
+    }
+    console.log(result);
+    socket.emit('delete_entries', result)
+  }
 }
 
 function sendText(){

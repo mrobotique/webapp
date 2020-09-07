@@ -22,7 +22,7 @@ socket.on('my_response', function(message) {
     var sec = tiempo - (min * 60);
     document.getElementById("tiempoRestante").innerHTML = ('0'  + hr).slice(-2)+':'+('0'  + min).slice(-2)+':'+('0' + sec).slice(-2);
     if(!isNaN(message.count_down)){
-    document.getElementById("count_down").value = message.count_down;
+    document.getElementById("count_down").value = 18 - message.count_down;
     }
     });
 

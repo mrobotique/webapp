@@ -1,0 +1,56 @@
+<!-- https://www.w3schools.com/css/tryit.asp?filename=trycss_website_layout_grid -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>UVSA GROUP</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon"
+      type="image/png"
+      href="../static/favicon.png">
+<link rel="stylesheet" type="text/css" href="../static/uvsa_style.css">
+</head>
+
+
+<body>
+    <script src="/static/socket.io.js"></script>
+    <script src="/static/logs_websocket.js"></script>
+    <script src="/static/a076d05399.js"></script>
+
+
+<div class="column image">
+  <img class="logo" src="../static/UVSA_400.png" align="center" />
+  </div>
+  <div class="topnav">
+   <!-- <h2>HOME</h2>-->
+      <a href="/" title="Home"><i class='fas fa-home' style='font-size:160%'></i></a>
+      <a href="/diagnostico" title="Diagnostico"><i class='fas fa-heartbeat' style='font-size:160%'></i></a>
+      <a href="/logs" title="Logs"><i class='fas fa-database' style='font-size:160%'></i></a>
+      <a href="/ajustes" title="Ajustes"><i class='fas fa-cogs' style='font-size:160%'></i></a>
+      <a href="/ayuda" title="Ayuda"><i class='fas fa-question' style='font-size:160%'></i></a>
+      <a href="/acerca" title="Acerca UVSA-Group"><i class='fas fa-info-circle' style='font-size:160%'></i></a>
+      <a href="" title="Plots"><i class='fas fa-chart-line' style='font-size:160%'></i></a>
+  </div>
+<p>
+  <!-- <h2 style="color:#100935;  margin-bottom: 0px;" align="center">CENTRO DE DIAGNOSTICO</h2> -->
+       <table id="fancy_table" style='font-size:160%;'>
+          <tr>
+            <th colspan="1" style="text-align:center"><a href="static/Log/log.csv" style="color:#FFFFFF;"><i class='fas fa-download'></i></a></th>
+            <th colspan="1" style="text-align:center"><a href="javascript:deleteSelected()" style="color:#FFFFFF;"><i class='fas fa-times-circle'></i></a></th>
+            <th colspan="1" style="text-align:center"><a href="javascript:deleteButton()" style="color:#FFFFFF;"><i class='fas fa-trash'></i></a></th>
+          </tr>
+       </table>
+    </p>
+    <!-- ***********   Tabla ID TIEMPO FECHA***********-->
+   <p class="center">
+       <table id="fancy_table" name="tabla_bitacora" style='font-size:10px'>
+          <tr>
+            <th colspan="21" style="text-align:center;  font-size:14px" id="prueba">Bitacora</th>
+          </tr>
+        <tr>
+            <td colspan="4" style="text-align:center; font-size:14px"><b>Fecha</b></td>
+            <td colspan="4" style="text-align:center; font-size:14px"><b>Hora</b></td>
+            <td colspan="3" style="text-align:center; font-size:14px"><b>Expo</b></td>
+            <td colspan="7" style="text-align:center; font-size:14px"><b>Ubicacion</b></td>
+            <td colspan="3" style="text-align:center; font-size:14px"><i class='fas fa-times-circle'></i></td>
+        </tr>

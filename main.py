@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 from threading import Lock
 from flask import Flask, render_template, session, request, \
-    copy_current_request_context, send_from_directory
+    copy_current_request_context, send_from_directory, make_response
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 
 import subprocess
+import math
 from datetime import datetime
 import serial
 import json
 import yaml
+import logManager
 
 
 ser = serial.Serial('/dev/ttyUSB0', 19200, timeout=1)
@@ -26,11 +28,17 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
-
+# Control Globals
+global log_entry
+global uvsa_dict
 uvsa_dict = {}
+global Ubicacion
+Ubicacion = "tst"
+global HoraInicio
 
 
 def background_serial_reader_thread():
+    global uvsa_dict
     # pass
     """Example of how to send server generated events to clients."""
     last_pub = 0
@@ -38,11 +46,11 @@ def background_serial_reader_thread():
               'mag2', 'lamp_byte', 'horometro', 'buzzer', 'operationMode', 'tiempoRestante', 'mask_byte', 'count_down']
 
     decoded_data = []
+    last_modo_operacion = 3 # Manera natural de iniciar el Operation Mode
 
     while True:
         try:
             ser_data = ser.readline().decode('utf8')[:-2]
-            print(ser_data)
         except UnicodeDecodeError:
             pass
 
@@ -50,7 +58,6 @@ def background_serial_reader_thread():
             decoded_data = ser_data.split(":")[1][1:-2].split(',')
         except IndexError:
             print("index error")
-
 
         if len(uvsa_key) == len(decoded_data): #El primer paquete despues de inicializar tiene basura... por eso se filtra aqui
             for i in range(len(uvsa_key)):
@@ -76,13 +83,32 @@ def background_serial_reader_thread():
             uvsa_dict['lamp6'] = uvsa_dict['lamp_byte'] & 0b00100000
             uvsa_dict['lampDeadman'] = uvsa_dict['lamp_byte'] & 0b01000000
             uvsa_dict['lampAuto'] = uvsa_dict['lamp_byte'] & 0b10000000
-
+            #print(uvsa_dict['tiempoRestante'])
+            # Checa si es necesario guardar la ultima rutina de sanitizacion en la bitacora
+            last_modo_operacion = create_log(uvsa_dict['operationMode'], last_modo_operacion)
             #  ToDo Un Horometro de verdad
             socketio.sleep(0.02)
             pub = int(float(uvsa_dict['msg_id'])/100)
             if pub != last_pub:
                 last_pub = pub
-                socketio.emit('my_response', uvsa_dict)
+                socketio.emit('my_response', uvsa_dict, broadcast=True)
+
+
+def create_log(modo_operacion, last_modo_operacion):
+    global log_entry
+    global Ubicacion
+    global HoraInicio
+    if (modo_operacion == 1) and (last_modo_operacion == 2):
+        HoraInicio = datetime.now()
+        log_entry = [uvsa_dict['date'], uvsa_dict['time'], "0", Ubicacion]
+
+    if (modo_operacion == 3) and (last_modo_operacion == 1):
+        tiempo_de_exposion = datetime.now() - HoraInicio
+        log_entry[2] = str(math.floor(tiempo_de_exposion.total_seconds()))
+        logManager.add_new_entry(log_entry)
+        log_entry = []
+        socketio.emit('reload_log', broadcast=True)
+    return modo_operacion
 
 
 @app.route('/')
@@ -98,7 +124,8 @@ def diagnostico():
 
 @app.route('/logs')
 def logs():
-    return render_template('logs.html')
+    response = make_response(logManager.run_guts())
+    return response
 
 
 @app.route('/ajustes')
@@ -128,7 +155,7 @@ def acerca_info():
 
 @socketio.on('connect')
 def test_connect():
-    print("client connected")
+    #print("client connected")
     global thread
     with thread_lock:
         if thread is None:
@@ -138,7 +165,6 @@ def test_connect():
 
 @socketio.on('startButton')
 def start_button(msg):
-    #print("start Button", json.dumps(msg))
     ser.write((json.dumps(msg) + '\r\n').encode())
 
 
@@ -158,6 +184,7 @@ def set_datetime(msg):
 
 @socketio.on('request_toggle_status')
 def set_toggle_status():
+    global uvsa_dict
     mask_byte = {}
     mask_byte['buzzer'] = uvsa_dict['mask_byte'] & 0b00000001
     mask_byte['lamp_1'] = uvsa_dict['mask_byte'] & 0b00000010
@@ -167,6 +194,18 @@ def set_toggle_status():
     mask_byte['lamp_5'] = uvsa_dict['mask_byte'] & 0b00100000
     mask_byte['lamp_6'] = uvsa_dict['mask_byte'] & 0b01000000
     emit('set_toggle_status', mask_byte)
+
+
+@socketio.on('delete_entries')
+def delete_entries(entries_list):
+    logManager.del_rows(entries_list)
+    emit('reload_log', broadcast=True)
+
+
+@socketio.on('delete_file')
+def delete_file():
+    logManager.del_log()
+    emit('reload_log', broadcast=True)
 
 
 if __name__ == '__main__':
