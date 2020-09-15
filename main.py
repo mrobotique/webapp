@@ -71,8 +71,8 @@ def background_serial_reader_thread():
                             uvsa_dict[uvsa_key[i]] = 0
                         else:
                             uvsa_dict[uvsa_key[i]] = decoded_data[i][1:-1]
-
-            uvsa_dict['date'] = str(datetime.date(datetime.now()))
+            today = str(datetime.date(datetime.now())).split("-")
+            uvsa_dict['date'] = today[2] + "/" + today[1] + "/" + today[0] # dd-mm-yyy
             uvsa_dict['time'] = str(datetime.time(datetime.now())).split('.')[0]
             #Decodificar lamparas
             uvsa_dict['lamp1'] = uvsa_dict['lamp_byte'] & 0b00000001

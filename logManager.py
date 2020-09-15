@@ -35,7 +35,9 @@ def genera_html(entries_list):
 
     dinamyc_page = head
     index = 1
-    for entry in entries_list[1:]: #El primer renglon es el hedader del archivo con los nombres de las columnas
+    inverted_list = copy.deepcopy( entries_list[1:])
+    inverted_list.reverse()
+    for entry in inverted_list: #El primer renglon es el hedader del archivo con los nombres de las columnas
         try:
             [fecha, hora, expo, lugar] = entry
             dinamyc_page += '        <tr>'

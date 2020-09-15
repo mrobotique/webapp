@@ -2,13 +2,14 @@ var socket = io.connect(location.host); //location.host devuelve la ip del servi
 var slider = document.getElementById("myTimeRange");
 var time_label = document.getElementById("time_tag");
 time_label.innerHTML = slider.value + " min."; // Display the default slider value
-
+var operationMode
 socket.on('my_response', function(message) {
     //console.log(arguments)
     //document.getElementById("p1").innerHTML ="iteration = " + message.data});
     //document.getElementById("p1").innerHTML = message.data
     document.getElementById("date").innerHTML = message.date;
     document.getElementById("time").innerHTML = message.time;
+    operationMode = message.operationMode;
     if (message.operationMode == 3){
         document.getElementById("operationMode").innerHTML = "<i class='fas fa-hourglass-end' style='font-size:160%; color:grey'>";
     }
@@ -26,11 +27,31 @@ socket.on('my_response', function(message) {
     }
     });
 
-function startButton(){
+function launchIt(){
     var flag_time = 1;
     var flag_hardware = 0;
     socket.emit('startButton',{'time':[flag_time, slider.value * 60], 'mask':[flag_hardware, 0]});
-}
+};
+
+function startButton(){
+    if (((slider.value * 60) < 300)  && (operationMode == 3)){
+        if (confirm ("No se recomienda utilizar tiempos menores a 5 minutos.\nPresione \"OK\" para continuar o \"Cancel\" para regresar."))
+        {
+            launchIt();
+        }
+        else
+        {
+            slider.value = 5;
+            time_label.innerHTML = 5  + " min.";
+            time_label.innerHTML = 5  + " min.";
+
+        }
+    }
+    else
+    {
+        launchIt();
+    }
+};
 
 // Update the current slider value (each time you drag the slider handle)
 slider.oninput = function() {

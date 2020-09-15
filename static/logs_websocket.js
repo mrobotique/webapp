@@ -25,7 +25,7 @@ function deleteSelected(){
   if (confirm("Esta accion borrara los elementos seleccionados de manera definitiva!")) {
     var i;
     var result = []
-    for (i = 1; i <= data_rows; i++)
+    for (i = data_rows; i >=1 ; i--) //Invertido por que la lista de python viene invertida para tener la entrada mas nueva hasta  arriba
     {
        if (document.getElementById("check_" + i.toString()).checked )
        {
