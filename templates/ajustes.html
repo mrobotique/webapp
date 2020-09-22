@@ -21,13 +21,13 @@
   <img class="logo" src="../static/UVSA_400.png" align="center" />
   </div>
   <div class="topnav">
-   <!-- <h2>HOME</h2>-->
+      <!-- <h2>HOME</h2>-->
       <a href="/" title="Home"><i class='fas fa-home' style='font-size:160%'></i></a>
-      <a href="{{ url_for('diagnostico')}}" title="Diagnostico"><i class='fas fa-heartbeat' style='font-size:160%'></i></a>
       <a href="{{ url_for('logs')}}" title="Logs"><i class='fas fa-database' style='font-size:160%'></i></a>
       <a href="{{ url_for('ajustes')}}" title="Ajustes"><i class='fas fa-cogs' style='font-size:160%'></i></a>
+      <a href="{{ url_for('diagnostico')}}" title="Diagnostico"><i class='fas fa-heartbeat' style='font-size:160%'></i></a>
       <a href="{{ url_for('ayuda')}}" title="Ayuda"><i class='fas fa-question' style='font-size:160%'></i></a>
-      <a href="{{ url_for('acerca')}}" title="Acerca UVSA-Group"><i class='fas fa-info-circle' style='font-size:160%'></i></a>
+      <a href="{{ url_for('acerca')}}" title="Acerca UVSA-Group"><i class='fas fa-info-circle' style='font-size:160%'></i></a>>
   </div>
 
     <h2 style="color:#100935;  margin-bottom: 0px; margin-top: 0px;" align="center">PANEL DE CONTROL</h2>
@@ -40,7 +40,7 @@
             <th colspan="3" style="text-align:center">Informacion de Sistema</th>
           </tr>
         <tr>
-            <td style="text-align:center; width:25%;"><b>Msg ID</b></td>
+            <td style="text-align:center; width:25%;"><b>Com</b></td>
             <td style="text-align:center; width:25%"><b>Fecha</b></td>
             <td style="text-align:center; width:25%"><b>Hora</b></td>
         </tr>
@@ -86,7 +86,9 @@
                 <span class="slider round"></span></label>
             </td>
         </tr>
-
+        <tr>
+            <td colspan="6" align="center" style="background-color:#FFFFFF"><img src="/static/lamps.png" style="width:200px;height:200px;"> </td>
+        </tr>
         <tr>
             <td colspan="4"style="text-align:center"><b>Lampara 1</b></td>
             <td colspan="2"style="text-align:center"><label class="switch">
@@ -136,7 +138,7 @@
         </tr>
          <tr>
              <td colspan="6" style="text-align:center;">
-                 <input type="button" value="Enviar Configuracion" class="myButton" onclick="submit_Conf()"></td>
+                 <input type="button" value="Confirmar" class="myButton" onclick="submit_Conf()"></td>
         </tr>
         </table>
         </form>

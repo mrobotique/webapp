@@ -43,7 +43,8 @@ def background_serial_reader_thread():
     """Example of how to send server generated events to clients."""
     last_pub = 0
     uvsa_key=['msg_id', 'version', 'card', 'deadman1', 'deadman2', 'auto', 'pir1', 'pir2', 'pir3', 'pir4', 'mag1',
-              'mag2', 'lamp_byte', 'horometro', 'buzzer', 'operationMode', 'tiempoRestante', 'mask_byte', 'count_down']
+              'mag2', 'lamp_byte', 'horometro', 'buzzer', 'operationMode', 'tiempoRestante', 'mask_byte', 'count_down',
+              'state_machine_status', 'total_time']
 
     decoded_data = []
     last_modo_operacion = 3 # Manera natural de iniciar el Operation Mode
@@ -83,7 +84,6 @@ def background_serial_reader_thread():
             uvsa_dict['lamp6'] = uvsa_dict['lamp_byte'] & 0b00100000
             uvsa_dict['lampDeadman'] = uvsa_dict['lamp_byte'] & 0b01000000
             uvsa_dict['lampAuto'] = uvsa_dict['lamp_byte'] & 0b10000000
-            #print(uvsa_dict['tiempoRestante'])
             # Checa si es necesario guardar la ultima rutina de sanitizacion en la bitacora
             last_modo_operacion = create_log(uvsa_dict['operationMode'], last_modo_operacion)
             #  ToDo Un Horometro de verdad

@@ -1,3 +1,46 @@
+/* GAUGES */
+        	//canvas initialization
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext("2d");
+	//dimensions
+	var W = canvas.width;
+	var H = canvas.height;
+	//Variables
+	var degrees = 0;
+	var color = "#100935"; //green looks better to me
+	var bgcolor = "#DDD";
+	var text;
+	var animation_loop, redraw_loop;
+
+function init()
+	{
+		//Clear the canvas everytime a chart is drawn
+		ctx.clearRect(0, 0, W, H);
+
+		//Background 360 degree arc
+		ctx.beginPath();
+		ctx.strokeStyle = bgcolor;
+		ctx.lineWidth = 20;
+		ctx.arc(W/2, H/2, 100, 0, Math.PI*2, false); //you can see the arc now
+		ctx.stroke();
+
+		//gauge will be a simple arc
+		//Angle in radians = angle in degrees * PI / 180
+		var radians = degrees * Math.PI / 180;
+		ctx.beginPath();
+		ctx.strokeStyle = color;
+		ctx.lineWidth = 10;
+		//The arc starts from the rightmost end. If we deduct 90 degrees from the angles
+		//the arc will start from the topmost end
+		ctx.arc(W/2, H/2, 100, 0 - 90*Math.PI/180, radians - 90*Math.PI/180, false);
+		//you can see the arc now
+		ctx.stroke();
+
+		//Lets add the text
+		ctx.fillStyle = color;
+		ctx.font = "40px Arial";
+	}
+
 var socket = io.connect(location.host); //location.host devuelve la ip del servidor:puerto
 var slider = document.getElementById("myTimeRange");
 var time_label = document.getElementById("time_tag");
@@ -10,20 +53,70 @@ socket.on('my_response', function(message) {
     document.getElementById("date").innerHTML = message.date;
     document.getElementById("time").innerHTML = message.time;
     operationMode = message.operationMode;
-    if (message.operationMode == 3){
-        document.getElementById("operationMode").innerHTML = "<i class='fas fa-hourglass-end' style='font-size:160%; color:grey'>";
-    }
-    else{
-        document.getElementById("operationMode").innerHTML = "<i class='fas fa-hourglass' style='font-size:160%; color:purple'>";
-    }
 
+    switch (message.state_machine_status)
+    {
+        case 0:
+            break;
+        case 1:
+            document.getElementById("operationMode").innerHTML = "<i class='fas fa-history' style='font-size:160%; color:#394de6'>";
+            document.getElementById("operationModeText").innerHTML = "Iniciando proceso";
+            break;
+        case 2:
+            document.getElementById("operationMode").innerHTML = "<i class='fas fa-sun' style='font-size:160%; color:purple'>";
+            document.getElementById("operationModeText").innerHTML = "Sanitizando";
+            break;
+        case 3:
+            document.getElementById("operationMode").innerHTML = "<i class='fas fa-users' style='font-size:160%; color:#ffbf00'>";
+            document.getElementById("operationModeText").innerHTML = "En pausa por deteccion";
+            break;
+        case 4:
+            document.getElementById("operationMode").innerHTML = "<i class='fas fa-history' style='font-size:160%; color:#394de6'>";
+            document.getElementById("operationModeText").innerHTML = "Reiniciando proceso";
+            break;
+        case 5:
+            document.getElementById("operationMode").innerHTML = "<i class='fas fa-sun' style='font-size:160%; color:purple'>";
+            document.getElementById("operationModeText").innerHTML = "Sanitizando - Manual";
+            break;
+        case 6:
+            document.getElementById("operationMode").innerHTML = "<i class='fas fa-hand-paper' style='font-size:160%; color:#1d1f29'>";
+            document.getElementById("operationModeText").innerHTML = "Modo manual";
+            break;
+        case 7:
+            document.getElementById("operationMode").innerHTML = "<i class='fas fa-check' style='font-size:160%; color:orangered'>";
+            document.getElementById("operationModeText").innerHTML = "En espera - Automatico";
+            break;
+        case 8:
+            document.getElementById("operationMode").innerHTML = "<i class='fas fa-times' style='font-size:160%; color:red'>";
+            document.getElementById("operationModeText").innerHTML = "Error";
+            break;
+        case 9:
+            document.getElementById("operationMode").innerHTML = "<i class='fas fa-hand-point-up' style='font-size:160%; color:#bd00bd'>";
+            document.getElementById("operationModeText").innerHTML = "Ingresando tiempo";
+            break;
+        case 10:
+            document.getElementById("operationMode").innerHTML = "<i class='fas fa-skull' style='font-size:160%; color:#ffbf00'>";
+            document.getElementById("operationModeText").innerHTML = "Proceso abortado - Presencia";
+            break;
+    };
+
+    var total_time = message.total_time;
     var tiempo  = message.tiempoRestante  //document.getElementById("tiempoRestante").innerHTML
     var hr = Math.floor(tiempo/3600);
     var min = Math.floor((tiempo - (hr*3600))/60);
     var sec = tiempo - (min * 60);
-    document.getElementById("tiempoRestante").innerHTML = ('0'  + hr).slice(-2)+':'+('0'  + min).slice(-2)+':'+('0' + sec).slice(-2);
+    //document.getElementById("tiempoRestante").innerHTML = ('0'  + hr).slice(-2)+':'+('0'  + min).slice(-2)+':'+('0' + sec).slice(-2);
     if(!isNaN(message.count_down)){
     document.getElementById("count_down").value = 18 - message.count_down;
+        init();
+    	text = ('0'  + hr).slice(-2)+':'+('0'  + min).slice(-2)+':'+('0' + sec).slice(-2);
+		//Lets center the text
+		//deducting half of text width from position x
+		text_width = ctx.measureText(text).width;
+		//adding manual value to position y since the height of the text cannot
+		//be measured easily. There are hacks but we will keep it manual for now.
+		ctx.fillText(text, W/2 - text_width/2 , H/2 +15);
+		degrees = (Math.floor(tiempo*360/total_time));
     }
     });
 
@@ -61,4 +154,5 @@ slider.oninput = function() {
 
 window.onload = function() {
         socket.emit('connect');
+	degrees = 0;
 };

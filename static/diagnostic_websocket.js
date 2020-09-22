@@ -1,8 +1,14 @@
 var socket = io.connect(location.host); //location.host devuelve la ip del servidor:puerto
+var commCounter = 0;
 socket.on('my_response', function(message) {
     //console.log(arguments)
     //document.getElementById("p1").innerHTML ="iteration = " + message.data});
-    document.getElementById("msg_id").innerHTML = message.msg_id;
+    if(commCounter === 6) commCounter = 0;
+    if(commCounter===0) document.getElementById("msg_id").innerHTML = "<i class='fas fa-network-wired' style='font-size:160%; color:purple'>";
+    if(commCounter===2) document.getElementById("msg_id").innerHTML = "<i class='fas fa-network-wired' style='font-size:160%; color:gray'>";
+    if(commCounter===3) document.getElementById("msg_id").innerHTML = "<i class='fas fa-network-wired' style='font-size:160%; color:#100935'>";
+    if(commCounter===5) document.getElementById("msg_id").innerHTML = "<i class='fas fa-network-wired' style='font-size:160%; color:gray'>";
+    commCounter += 1;
     document.getElementById("operationMode").innerHTML = message.operationMode;
     document.getElementById("date").innerHTML = message.date;
     document.getElementById("time").innerHTML = message.time;

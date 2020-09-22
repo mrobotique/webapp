@@ -337,3 +337,11 @@ progress::-webkit-progress-value {
 	background: #100935;
 	transition: width 0s ease-in-out;
 }
+
+/*  GAUGE */
+/*Centering the gauge*/
+#canvas {
+	display: block;
+	width: 250px;
+	margin: 0px auto;
+}

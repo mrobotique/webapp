@@ -25,11 +25,11 @@ https://fontawesome.com/v4.7.0/icons/
   <img class="logo" src="../static/UVSA_400.png" align="center" />
   </div>
   <div class="topnav">
-   <!-- <h2>HOME</h2>-->
+      <!-- <h2>HOME</h2>-->
       <a href="/" title="Home"><i class='fas fa-home' style='font-size:160%'></i></a>
-      <a href="{{ url_for('diagnostico')}}" title="Diagnostico"><i class='fas fa-heartbeat' style='font-size:160%'></i></a>
       <a href="{{ url_for('logs')}}" title="Logs"><i class='fas fa-database' style='font-size:160%'></i></a>
       <a href="{{ url_for('ajustes')}}" title="Ajustes"><i class='fas fa-cogs' style='font-size:160%'></i></a>
+      <a href="{{ url_for('diagnostico')}}" title="Diagnostico"><i class='fas fa-heartbeat' style='font-size:160%'></i></a>
       <a href="{{ url_for('ayuda')}}" title="Ayuda"><i class='fas fa-question' style='font-size:160%'></i></a>
       <a href="{{ url_for('acerca')}}" title="Acerca UVSA-Group"><i class='fas fa-info-circle' style='font-size:160%'></i></a>
   </div>
@@ -43,7 +43,7 @@ https://fontawesome.com/v4.7.0/icons/
             <th colspan="4" style="text-align:center">Informacion de Control</th>
           </tr>
         <tr>
-            <td style="text-align:center; width:25%;"><b>Msg ID</b></td>
+            <td style="text-align:center; width:25%;"><b>Com</b></td>
             <td style="text-align:center; width:25%;"><b>Modo</b></td>
             <td style="text-align:center; width:25%"><b>Fecha</b></td>
             <td style="text-align:center; width:25%"><b>Hora</b></td>
@@ -60,23 +60,23 @@ https://fontawesome.com/v4.7.0/icons/
 <!-- ***********   Tabla Sensores ***********-->
     <p class="center"><table id="fancy_table" style=" font-size:90%;">
   <tr>
-    <th colspan="2">Sensor</th>
+    <th colspan="2">Entrada</th>
     <th colspan="4" style="text-align:center">Estado</th>
   </tr>
 <tr>
-  	<td colspan="2" style="text-align:left"><b>Auto</b></td>
+  	<td colspan="2" style="text-align:center"><b>Boton Principal</b></td>
     <td style="text-align:center" colspan="4" id="auto"><i class="fas fa-power-off" style='font-size:24px;color:gray'></i></td>
 </tr>
 
 <tr>
-  	<td colspan="2" style="text-align:left"><b>Deadman</b></td>
+  	<td colspan="2" style="text-align:center"><b>Botones Manubrio</b></td>
     <td style="text-align:center" colspan="2" id="deadman1"><i class="fas fa-power-off" style='font-size:24px;color:gray'></i></td>
     <td style="text-align:center" colspan="2" id="deadman2"><i class="fas fa-power-off" style='font-size:24px;color:gray'></i></td>
 </tr>
 
 
 <tr>
-    <td colspan="2"  style="text-align:left"><b>PIR</b></td>
+    <td colspan="2"  style="text-align:center"><b>Sensor Movimiento</b></td>
     <td style="text-align:center" id="pir1"><i class="fas fa-user" style='font-size:24px;color:red'></i></td>
     <td style="text-align:center" id="pir2"><i class="fas fa-user" style='font-size:24px;color:red'></i></td>
     <td style="text-align:center" id="pir3"><i class="fas fa-user" style='font-size:24px;color:red'></i></td>
@@ -84,7 +84,7 @@ https://fontawesome.com/v4.7.0/icons/
   </tr>
 
 <tr>
-  	<td colspan="2"  style="text-align:left"><b>Magneticos</b></td>
+  	<td colspan="2"  style="text-align:center"><b>Sensor Magnetico</b></td>
     <td style="text-align:center" colspan="2" id="mag1"><i class="fas fa-magnet" style='font-size:24px;color:red'></i></td>
     <td style="text-align:center" colspan="2" id="mag2"><i class="fas fa-magnet" style='font-size:24px;color:red'></i></td>
 </tr>
@@ -92,6 +92,25 @@ https://fontawesome.com/v4.7.0/icons/
 </table>
       </p>
 
+<!-- ***********   Tabla Indicadores ***********-->
+<p class="center"><table id="fancy_table" style=" font-size:90%;">
+  <tr>
+    <th colspan="3" style="text-align:center">Indicadores</th>
+  </tr>
+
+<tr>
+  	<td style="text-align:center; width:33%"><b>Boton Principal</b></td>
+    <td style="text-align:center; width:33%"><b>Botones Manubrio</b></td>
+    <td style="text-align:center; width:33%"><b>Buzzer</b></td>
+</tr>
+<tr>
+    <td style="text-align:center" id="lampAuto"><i class="fa fa-lightbulb" style='font-size:24px;color:'></i></td>
+    <td style="text-align:center" id="lampDeadman"><i class="fa fa-lightbulb" style='font-size:24px;color:purple'></i></td>
+    <td style="text-align:center" id="buzzer"><i class="fa fa-volume-up" style='font-size:24px;color:green'></i></td>
+
+</tr>
+  </table>
+</p>
 
 <!-- ***********   Tabla Lamparas ***********-->
    <p class="center"><table id="fancy_table" style=" font-size:90%;">
@@ -114,30 +133,27 @@ https://fontawesome.com/v4.7.0/icons/
     <td style="text-align:center" id="lamp4"><i class="fa fa-lightbulb" style='font-size:24px;color:gray'></i></td>
     <td style="text-align:center" id="lamp5"><i class="fa fa-lightbulb" style='font-size:24px;color:gray'></i></td>
     <td style="text-align:center" id="lamp6"><i class="fa fa-lightbulb" style='font-size:24px;color:gray'></i></td>
-
 </tr>
-  </table>
-</p>
-
- <!-- ***********   Tabla Indicadores ***********-->
-   <p class="center"><table id="fancy_table" style=" font-size:90%;">
   <tr>
-    <th colspan="3" style="text-align:center">Indicadores</th>
+       <td colspan="6" align="center"><img src="/static/lamps.png" style="width:200px;height:200px;"> </td>
   </tr>
 
-<tr>
-  	<td style="text-align:center; width:33%"><b>Auto</b></td>
-    <td style="text-align:center; width:33%"><b>Deadman</b></td>
-    <td style="text-align:center; width:33%"><b>Buzzer</b></td>
-</tr>
-<tr>
-    <td style="text-align:center" id="lampAuto"><i class="fa fa-lightbulb" style='font-size:24px;color:'></i></td>
-    <td style="text-align:center" id="lampDeadman"><i class="fa fa-lightbulb" style='font-size:24px;color:purple'></i></td>
-    <td style="text-align:center" id="buzzer"><i class="fa fa-volume-up" style='font-size:24px;color:green'></i></td>
-
-</tr>
   </table>
 </p>
-      <a href="" title="Plots"><i class='fas fa-chart-line' style='font-size:160%'></i></a>
+
+
+<!-- Tabla Diagnostico Avanzado-->
+   <p class="center"><table id="fancy_table" style=" font-size:90%;">
+  <tr>
+    <th colspan="6" style="text-align:center">Diagnostico avanzado </th>
+  </tr>
+        <tr>
+            <td colspan="5"><b>Graficos</b></td>
+            <td colspan="1" style='font-size:160%; text-align:center;'><a href="" title="Plots" style="color:#100935"><i class='fas fa-chart-line' style='font-size:160%'></i></a></td>
+        </tr>
+
+  </table>
+</p>
+
 </body>
 </html>

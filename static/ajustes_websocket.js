@@ -1,9 +1,16 @@
+var commCounter = 0;
 var socket = io.connect(location.host); //location.host devuelve la ip del servidor:puerto
 socket.on('my_response', function(message) {
-    document.getElementById("msg_id").innerHTML = message.msg_id;
+    if(commCounter === 6) commCounter = 0;
+    if(commCounter===0) document.getElementById("msg_id").innerHTML = "<i class='fas fa-network-wired' style='font-size:160%; color:purple'>";
+    if(commCounter===2) document.getElementById("msg_id").innerHTML = "<i class='fas fa-network-wired' style='font-size:160%; color:gray'>";
+    if(commCounter===3) document.getElementById("msg_id").innerHTML = "<i class='fas fa-network-wired' style='font-size:160%; color:#100935'>";
+    if(commCounter===5) document.getElementById("msg_id").innerHTML = "<i class='fas fa-network-wired' style='font-size:160%; color:gray'>";
+    commCounter += 1;
     document.getElementById("date").innerHTML = message.date;
     document.getElementById("time").innerHTML = message.time;
     });
+
 
 window.onload = function() {
         socket.emit('connect');
