@@ -59,7 +59,7 @@ function submit_Conf() {
 };
 
 socket.on('set_toggle_status', function(msg){
-    console.log(msg);
+    //console.log(msg);
     document.getElementById("toggle_buzzer").checked = msg.buzzer; //msg es int pero si funciona 1/0 como true/false
     document.getElementById("toggle_lampara1").checked = msg.lamp_1; //msg es int pero si funciona 1/0 como true/false
     document.getElementById("toggle_lampara2").checked = msg.lamp_2; //msg es int pero si funciona 1/0 como true/false

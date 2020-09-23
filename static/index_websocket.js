@@ -1,18 +1,17 @@
 /* GAUGES */
-        	//canvas initialization
-	var canvas = document.getElementById("canvas");
-	var ctx = canvas.getContext("2d");
-	//dimensions
-	var W = canvas.width;
-	var H = canvas.height;
-	//Variables
-	var degrees = 0;
-	var color = "#100935"; //green looks better to me
-	var bgcolor = "#DDD";
-	var text;
-	var animation_loop, redraw_loop;
+//canvas initialization
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+//dimensions
+var W = canvas.width;
+var H = canvas.height;
+//Variables
+var degrees = 0;
+var color = "#100935"; //UVSA Blue
+var bgcolor = "#DDD";
+var gauge_text;
 
-function init()
+function gauge_init()
 	{
 		//Clear the canvas everytime a chart is drawn
 		ctx.clearRect(0, 0, W, H);
@@ -41,15 +40,15 @@ function init()
 		ctx.font = "40px Arial";
 	}
 
+/* WEBSOCKETS */
 var socket = io.connect(location.host); //location.host devuelve la ip del servidor:puerto
 var slider = document.getElementById("myTimeRange");
 var time_label = document.getElementById("time_tag");
 time_label.innerHTML = slider.value + " min."; // Display the default slider value
 var operationMode
+
 socket.on('my_response', function(message) {
     //console.log(arguments)
-    //document.getElementById("p1").innerHTML ="iteration = " + message.data});
-    //document.getElementById("p1").innerHTML = message.data
     document.getElementById("date").innerHTML = message.date;
     document.getElementById("time").innerHTML = message.time;
     operationMode = message.operationMode;
@@ -108,19 +107,20 @@ socket.on('my_response', function(message) {
     //document.getElementById("tiempoRestante").innerHTML = ('0'  + hr).slice(-2)+':'+('0'  + min).slice(-2)+':'+('0' + sec).slice(-2);
     if(!isNaN(message.count_down)){
     document.getElementById("count_down").value = 18 - message.count_down;
-        init();
-    	text = ('0'  + hr).slice(-2)+':'+('0'  + min).slice(-2)+':'+('0' + sec).slice(-2);
+        gauge_init();
+    	gauge_text = ('0'  + hr).slice(-2)+':'+('0'  + min).slice(-2)+':'+('0' + sec).slice(-2);
 		//Lets center the text
 		//deducting half of text width from position x
-		text_width = ctx.measureText(text).width;
+		text_width = ctx.measureText(gauge_text).width;
 		//adding manual value to position y since the height of the text cannot
 		//be measured easily. There are hacks but we will keep it manual for now.
-		ctx.fillText(text, W/2 - text_width/2 , H/2 +15);
+		ctx.fillText(gauge_text, W/2 - text_width/2 , H/2 +15);
 		degrees = (Math.floor(tiempo*360/total_time));
     }
     });
 
 function launchIt(){
+    // Fnc llamada por la funcion del boton de iniciar el proceso
     var flag_time = 1;
     var flag_hardware = 0;
     socket.emit('startButton',{'time':[flag_time, slider.value * 60], 'mask':[flag_hardware, 0]});
