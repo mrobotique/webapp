@@ -1,5 +1,6 @@
 var commCounter = 0;
 var socket = io.connect(location.host); //location.host devuelve la ip del servidor:puerto
+var state_machine_status;
 socket.on('my_response', function(message) {
     if(commCounter === 6) commCounter = 0;
     if(commCounter===0) document.getElementById("msg_id").innerHTML = "<i class='fas fa-network-wired' style='font-size:160%; color:purple'>";
@@ -9,6 +10,7 @@ socket.on('my_response', function(message) {
     commCounter += 1;
     document.getElementById("date").innerHTML = message.date;
     document.getElementById("time").innerHTML = message.time;
+    state_machine_status = message.state_machine_status;
     });
 
 
@@ -45,17 +47,28 @@ function submit_Conf() {
     /*  Para setear el valor de los checkboxes
      *  document.getElementById("toggle_lampara4").checked = true;
     */
-    var buzzer = document.getElementById("toggle_buzzer").checked;
-    var lampara1 = document.getElementById("toggle_lampara1").checked;
-    var lampara2 = document.getElementById("toggle_lampara2").checked;
-    var lampara3 = document.getElementById("toggle_lampara3").checked;
-    var lampara4 = document.getElementById("toggle_lampara4").checked;
-    var lampara5 = document.getElementById("toggle_lampara5").checked;
-    var lampara6 = document.getElementById("toggle_lampara6").checked;
-    var hardware_byte = buzzer + 2 * lampara1 + 4 * lampara2 + 8 * lampara3 + 16 * lampara4 + 32 * lampara5 + 64 * lampara6
-    var flag_time = 0;
-    var flag_hardware = 1;
-    socket.emit('startButton',{'time':[flag_time,0], 'mask':[flag_hardware, hardware_byte]});
+    //console.log(state_machine_status);
+    var ManualReadyStatus = 6;
+    var AutoReadyStatus = 7;
+
+    if ((state_machine_status == AutoReadyStatus) || (state_machine_status == ManualReadyStatus)) //No modificar si hay algun proceso (lampara no ready)
+    {
+        var buzzer = document.getElementById("toggle_buzzer").checked;
+        var lampara1 = document.getElementById("toggle_lampara1").checked;
+        var lampara2 = document.getElementById("toggle_lampara2").checked;
+        var lampara3 = document.getElementById("toggle_lampara3").checked;
+        var lampara4 = document.getElementById("toggle_lampara4").checked;
+        var lampara5 = document.getElementById("toggle_lampara5").checked;
+        var lampara6 = document.getElementById("toggle_lampara6").checked;
+        var hardware_byte = buzzer + 2 * lampara1 + 4 * lampara2 + 8 * lampara3 + 16 * lampara4 + 32 * lampara5 + 64 * lampara6
+        var flag_time = 0;
+        var flag_hardware = 1;
+        socket.emit('startButton',{'time':[flag_time,0], 'mask':[flag_hardware, hardware_byte]});
+    }
+    else
+    {
+        alert("La configuracion no puede ser modificada durante el proceso de sanitizacion");
+    }
 };
 
 socket.on('set_toggle_status', function(msg){

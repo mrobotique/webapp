@@ -127,7 +127,7 @@ function launchIt(){
 };
 
 function startButton(){
-    if (((slider.value * 60) < 300)  && (operationMode == 3)){
+    if (((slider.value * 60) < 300)  && (operationMode == 3) && (document.getElementById("myPresets").value == "0")){
         if (confirm ("No se recomienda utilizar tiempos menores a 5 minutos.\nPresione \"OK\" para continuar o \"Cancel\" para regresar."))
         {
             launchIt();
@@ -155,4 +155,45 @@ slider.oninput = function() {
 window.onload = function() {
         socket.emit('connect');
 	degrees = 0;
+};
+
+function getPreset(selectObject) {
+  var value = selectObject.value;
+  var exposure_time = 0;
+
+  switch(value)
+  {
+    case "0":
+        exposure_time = 5;
+        break;
+
+    case "1":
+        exposure_time = 2;
+        break;
+
+    case "2":
+        exposure_time = 5;
+        break;
+
+    case "3":
+        exposure_time = 10;
+        break;
+
+    case "4":
+        exposure_time = 17;
+        break;
+
+    case "5":
+        exposure_time = 27;
+        break;
+  };
+
+  //console.log(exposure_time);
+    slider.value = exposure_time;
+    time_label.innerHTML = exposure_time  + " min.";
+};
+
+function sliderChange(inputValue)
+{
+    document.getElementById("myPresets").value = "0";
 };

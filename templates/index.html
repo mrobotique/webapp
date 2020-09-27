@@ -57,7 +57,7 @@
             <td colspan="4" style="text-align:center">
                 <i class='fas fa-clock' style='font-size:160%; color:#100935; vertical-align:middle'></i>
                 <span class="slidecontainer">
-                     <input class="istyle" id="myTimeRange" max="120" min="1" type="range" value="5">
+                     <input class="istyle" id="myTimeRange" max="120" min="1" type="range" value="5" onchange="sliderChange(this)">
                 </span>
                 <b>
                      <span id="time_tag" style="vertical-align:middle; color:#100935">
@@ -79,19 +79,17 @@
 </tr>
 <tr>
     <td colspan="2"><b>Presets</b></td>
-    <td colspan="1" style="text-align:center">
-        <select name="Presets">
-            <option value="1">---</option>
-            <option value="1">1m</option>
-            <option value="2">2m</option>
-            <option value="3">3m</option>
-            <option value="4">4m</option>
-            <option value="5">5m</option>
+    <td colspan="2" style="text-align:center">
+        <select name="Presets" id="myPresets" style="width: 150px; text-align-last:center;" onchange="getPreset(this)">
+            <option value="0">Distancia en metros</option>
+            <option value="1">1 metro</option>
+            <option value="2">2 metros</option>
+            <option value="3">3 metros</option>
+            <option value="4">4 metros</option>
+            <option value="5">5 metros</option>
         </select>
     </td>
-    <td colspan="1" style="text-align:center; font-size:190%;"><a href="javascript:sendPreset" style="color:#100935;"><i
-            class='fas fa-play-circle'></i></a></td>
-</tr>
+
 <tr>
     <td colspan="2" style="text-align:center; width:25%"><b>Fecha</b></td>
     <td colspan="2" style="text-align:center; width:25%"><b>Hora</b></td>
