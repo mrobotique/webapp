@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import serial.tools.list_ports
 import serial
 import time
@@ -31,7 +32,7 @@ class ManagePowercard():
                 for p in ports:
                     if p.serial_number == self.FTDI_SERIAL_NUMBER:
                         self.device = p.device
-            # print(device)
+            print(self.device)
             time.sleep(2)  # Tiempo para que el puerto este listo
             try:
                 ser = serial.Serial(self.device, self.baudrate)
@@ -55,7 +56,7 @@ class ManagePowercard():
 
 if __name__ == '__main__':
     log = logging.getLogger("PowerCard_main")
-    device_serial_number = "A105ABMO"
+    device_serial_number = "AG0JU7H6" # "A105ABMO"
     cardReader = ManagePowercard(device_serial_number, device_baudrate=19200, mqtt_broker='localhost', mqtt_port=1883)
     try:
         cardReader.run()

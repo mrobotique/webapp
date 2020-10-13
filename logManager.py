@@ -108,4 +108,5 @@ def del_rows(row_list):
 
 def run_guts():
     csv_file = csv2list(logFile)
+
     return genera_html(csv_file)

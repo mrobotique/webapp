@@ -34,7 +34,7 @@ global uvsa_dict
 uvsa_dict = {}
 global Ubicacion
 Ubicacion = "tst"
-global HoraInicio
+global HoraInicio, lastCall, ExposureTime
 
 
 def background_serial_reader_thread():
@@ -88,26 +88,54 @@ def background_serial_reader_thread():
             last_modo_operacion = create_log(uvsa_dict['operationMode'], last_modo_operacion)
             #  ToDo Un Horometro de verdad
             socketio.sleep(0.02)
+            #print(uvsa_dict)
             pub = int(float(uvsa_dict['msg_id'])/100)
             if pub != last_pub:
                 last_pub = pub
                 socketio.emit('my_response', uvsa_dict, broadcast=True)
 
 
+def incrementa_horometro(ExposureTime):
+    if math.floor(ExposureTime) > 0:
+        print("incrementa_horometro", ExposureTime)
+
+
 def create_log(modo_operacion, last_modo_operacion):
     global log_entry
     global Ubicacion
     global HoraInicio
+    global lastCall
+    global ExposureTime
+    global uvsa_dict
+
     if (modo_operacion == 1) and (last_modo_operacion == 2):
         HoraInicio = datetime.now()
+        lastCall = HoraInicio
+        ExposureTime = 0
         log_entry = [uvsa_dict['date'], uvsa_dict['time'], "0", Ubicacion]
 
     if (modo_operacion == 3) and (last_modo_operacion == 1):
-        tiempo_de_exposion = datetime.now() - HoraInicio
-        log_entry[2] = str(math.floor(tiempo_de_exposion.total_seconds()))
-        logManager.add_new_entry(log_entry)
-        log_entry = []
+        if ExposureTime > 0:
+            log_entry[2] = str(math.floor(ExposureTime))
+            logManager.add_new_entry(log_entry)
+            log_entry = []
         socketio.emit('reload_log', broadcast=True)
+
+    try:
+        if lastCall == HoraInicio and uvsa_dict['state_machine_status'] == 2:
+            lastCall = datetime.now()
+
+        if lastCall != HoraInicio:
+            now = datetime.now()
+            delta_time = now - lastCall
+            lastCall = now
+            if uvsa_dict['state_machine_status'] == 2:
+                ExposureTime += delta_time.total_seconds()
+                if (ExposureTime % 10) < 0.2: # 0.2 Segundos ya que la frec del mesaje es de 5hz. Asi solo toma 1 msg cada 10 seg
+                    incrementa_horometro(ExposureTime)
+
+    except NameError:
+        pass
     return modo_operacion
 
 
