@@ -57,6 +57,7 @@ class ManagePowercard():
 if __name__ == '__main__':
     log = logging.getLogger("PowerCard_main")
     device_serial_number = "AG0JU7H6" # "A105ABMO"
+    device_serial_number = "A105ABMO"
     cardReader = ManagePowercard(device_serial_number, device_baudrate=19200, mqtt_broker='localhost', mqtt_port=1883)
     try:
         cardReader.run()

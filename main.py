@@ -1,26 +1,30 @@
 #!/usr/bin/env python3
-from threading import Lock
-from flask import Flask, render_template, session, request, \
-    copy_current_request_context, send_from_directory, make_response
-from flask_socketio import SocketIO, emit, join_room, leave_room, \
-    close_room, rooms, disconnect
-
+# from threading import Lock
+from flask import Flask, render_template, make_response
+from flask_socketio import SocketIO, emit
+from flask_mqtt import Mqtt
 import subprocess
 import math
 from datetime import datetime
-import serial
 import json
 import yaml
 import logManager
 
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
+#app.config['SECRET_KEY'] = 'secret!'
+app.config['MQTT_BROKER_URL'] = '127.0.0.1'
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_USERNAME'] = ''
+app.config['MQTT_PASSWORD'] = ''
+app.config['MQTT_REFRESH_TIME'] = 0.2  # refresh time in seconds
+mqtt = Mqtt(app)
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
 # the best option based on installed packages.
 async_mode = "eventlet"
-socketio = SocketIO(app, async_mode=async_mode)
-
+socketio = SocketIO(app, async_mode="threading")
+mqtt.subscribe('#')
 
 class WebApp:
     """
@@ -31,11 +35,6 @@ class WebApp:
         """
 
         """
-        self.ser = serial.Serial('/dev/ttyUSB0', 19200, timeout=1)
-        self.ser.setRTS(False)
-        self.ser.setDTR(False)
-        self.ser.read_all()
-
         # Control Globals
         self.log_entry = []
         self.uvsa_dict = {}
@@ -43,10 +42,13 @@ class WebApp:
         self.HoraInicio = 0
         self.lastCall = 0
         self.ExposureTime = 0
-        self.thread = None
-        self.thread_lock = Lock()
 
-    def background_serial_reader_thread(self):
+    def on_message (self, message):
+        #print(message.payload.decode("utf-8"), message.topic)
+        if message.topic == "uvsa/card":
+            self.on_card_message(message.payload.decode("utf-8"))
+
+    def on_card_message(self, message):
         """Example of how to send server generated events to clients."""
         last_pub = 0
         uvsa_key=['msg_id', 'version', 'card', 'deadman1', 'deadman2', 'auto', 'pir1', 'pir2', 'pir3', 'pir4', 'mag1',
@@ -55,52 +57,48 @@ class WebApp:
 
         decoded_data = []
         last_modo_operacion = 3 # Manera natural de iniciar el Operation Mode
+        try:
+            decoded_data = message.split(":")[1][1:-2].split(',')
 
-        while True:
-            try:
-                ser_data = self.ser.readline().decode('utf8')[:-2]
-            except UnicodeDecodeError:
-                pass
+        except IndexError:
+            print("index error")
 
-            try:
-                decoded_data = ser_data.split(":")[1][1:-2].split(',')
-            except IndexError:
-                print("index error")
-                socketio.sleep(0.02)
-
-            if len(uvsa_key) == len(decoded_data): #El primer paquete despues de inicializar tiene basura... por eso se filtra aqui
-                for i in range(len(uvsa_key)):
-                    try:
-                        self.uvsa_dict[uvsa_key[i]] = int(decoded_data[i])
-                    except KeyError:
-                        if decoded_data[i] == 'true':
-                            self.uvsa_dict[uvsa_key[i]] = 1
+        if len(uvsa_key) == len(decoded_data): #El primer paquete despues de inicializar tiene basura... por eso se filtra aqui
+            for i in range(len(uvsa_key)):
+                try:
+                    self.uvsa_dict[uvsa_key[i]] = int(decoded_data[i])
+                except ValueError:
+                    if decoded_data[i] == 'true':
+                        self.uvsa_dict[uvsa_key[i]] = 1
+                    else:
+                        if decoded_data[i] == 'false':
+                            self.uvsa_dict[uvsa_key[i]] = 0
                         else:
-                            if decoded_data[i] == 'false':
-                                self.uvsa_dict[uvsa_key[i]] = 0
-                            else:
-                                self.uvsa_dict[uvsa_key[i]] = decoded_data[i][1:-1]
-                today = str(datetime.date(datetime.now())).split("-")
-                self.uvsa_dict['date'] = today[2] + "/" + today[1] + "/" + today[0] # dd-mm-yyy
-                self.uvsa_dict['time'] = str(datetime.time(datetime.now())).split('.')[0]
-                #Decodificar lamparas
-                self.uvsa_dict['lamp1'] = self.uvsa_dict['lamp_byte'] & 0b00000001
-                self.uvsa_dict['lamp2'] = self.uvsa_dict['lamp_byte'] & 0b00000010
-                self.uvsa_dict['lamp3'] = self.uvsa_dict['lamp_byte'] & 0b00000100
-                self.uvsa_dict['lamp4'] = self.uvsa_dict['lamp_byte'] & 0b00001000
-                self.uvsa_dict['lamp5'] = self.uvsa_dict['lamp_byte'] & 0b00010000
-                self.uvsa_dict['lamp6'] = self.uvsa_dict['lamp_byte'] & 0b00100000
-                self.uvsa_dict['lampDeadman'] = self.uvsa_dict['lamp_byte'] & 0b01000000
-                self.uvsa_dict['lampAuto'] = self.uvsa_dict['lamp_byte'] & 0b10000000
-                # Checa si es necesario guardar la ultima rutina de sanitizacion en la bitacora
-                last_modo_operacion = self.create_log(self.uvsa_dict['operationMode'], last_modo_operacion)
-                #  ToDo Un Horometro de verdad
+                            self.uvsa_dict[uvsa_key[i]] = decoded_data[i][1:-1]
+            today = str(datetime.date(datetime.now())).split("-")
+            self.uvsa_dict['date'] = today[2] + "/" + today[1] + "/" + today[0] # dd-mm-yyy
+            self.uvsa_dict['time'] = str(datetime.time(datetime.now())).split('.')[0]
+            #Decodificar lamparas
+            self.uvsa_dict['lamp1'] = self.uvsa_dict['lamp_byte'] & 0b00000001
+            self.uvsa_dict['lamp2'] = self.uvsa_dict['lamp_byte'] & 0b00000010
+            self.uvsa_dict['lamp3'] = self.uvsa_dict['lamp_byte'] & 0b00000100
+            self.uvsa_dict['lamp4'] = self.uvsa_dict['lamp_byte'] & 0b00001000
+            self.uvsa_dict['lamp5'] = self.uvsa_dict['lamp_byte'] & 0b00010000
+            self.uvsa_dict['lamp6'] = self.uvsa_dict['lamp_byte'] & 0b00100000
+            self.uvsa_dict['lampDeadman'] = self.uvsa_dict['lamp_byte'] & 0b01000000
+            self.uvsa_dict['lampAuto'] = self.uvsa_dict['lamp_byte'] & 0b10000000
+            # Checa si es necesario guardar la ultima rutina de sanitizacion en la bitacora
+            last_modo_operacion = self.create_log(self.uvsa_dict['operationMode'], last_modo_operacion)
+            #  ToDo Un Horometro de verdad
+
+            #print(self.uvsa_dict)
+            pub = int(float(self.uvsa_dict['msg_id'])/100)
+            if pub != last_pub:
+                last_pub = pub
+                socketio.emit('my_response', self.uvsa_dict, broadcast=True)
                 socketio.sleep(0.02)
-                #print(self.uvsa_dict)
-                pub = int(float(self.uvsa_dict['msg_id'])/100)
-                if pub != last_pub:
-                    last_pub = pub
-                    socketio.emit('my_response', self.uvsa_dict, broadcast=True)
+
+
 
     @staticmethod
     def incrementa_horometro(ExposureTime):
@@ -155,6 +153,10 @@ class WebApp:
 my_webapp = WebApp()
 
 
+@mqtt.on_message()
+def handle_mqtt_message(client, userdata, message):
+    my_webapp.on_message(message)
+
 @app.route('/')
 def index():
     print("client connected")
@@ -197,22 +199,25 @@ def acerca_info():
     socketio.emit('info_fabricacion', fabricacion_dict)
 
 
-@socketio.on('connect')
-def test_connect():
-    #print("client connected")
-    with my_webapp.thread_lock:
-        if my_webapp.thread is None:
-            my_webapp.thread = socketio.start_background_task(my_webapp.background_serial_reader_thread())
-    emit('my_response', {'data': 'Connected', 'count': 0})
+# @socketio.on('connect')
+# def test_connect():
+#     #print("client connected")
+#     # with my_webapp.thread_lock:
+#     #     if my_webapp.thread is None:
+#     #         my_webapp.thread = socketio.start_background_task(my_webapp.background_serial_reader_thread())
+#     emit('my_response', {'data': 'Connected', 'count': 0})
 
 
 @socketio.on('startButton')
-def start_button(self, msg):
-    self.ser.write((json.dumps(msg) + '\r\n').encode())
+def start_button(msg):
+    # ser.write((json.dumps(msg) + '\r\n').encode())
+
+    # https://github.com/perrin7/ninjacape-mqtt-bridge/blob/master/ninjaCapeSerialMQTTBridge.py
+    print(msg)
 
 
 @socketio.on('set_dateTime')
-def set_datetime(self, msg):
+def set_datetime(msg):
     """
     :param msg: Diccionario que contiene la hora y la fecha msg = {'fecha':str, 'hora':str}
     :type: dict
@@ -226,7 +231,7 @@ def set_datetime(self, msg):
 
 
 @socketio.on('request_toggle_status')
-def set_toggle_status(self):
+def set_toggle_status():
     mask_byte = {'buzzer': my_webapp.uvsa_dict['mask_byte'] & 0b00000001,
                  'lamp_1': my_webapp.uvsa_dict['mask_byte'] & 0b00000010,
                  'lamp_2': my_webapp.uvsa_dict['mask_byte'] & 0b00000100,
@@ -238,7 +243,7 @@ def set_toggle_status(self):
 
 
 @socketio.on('delete_entries')
-def delete_entries(self, entries_list):
+def delete_entries(entries_list):
     logManager.del_rows(entries_list)
     emit('reload_log', broadcast=True)
 
@@ -250,4 +255,4 @@ def delete_file():
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='0.0.0.0')
+    socketio.run(app, debug=True, host='0.0.0.0', use_reloader=False)
