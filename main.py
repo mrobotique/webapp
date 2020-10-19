@@ -10,28 +10,34 @@ import json
 import yaml
 import logManager
 
+#FRAM - Horometro
+import board
+import busio
+import digitalio
+import adafruit_fram
+
+with open('/home/uv/uvsa_user/uvsa_config.yaml') as f:
+    uvsa_config = yaml.load(f, Loader=yaml.FullLoader)
 
 app = Flask(__name__)
-#app.config['SECRET_KEY'] = 'secret!'
-app.config['MQTT_BROKER_URL'] = '127.0.0.1'
-app.config['MQTT_BROKER_PORT'] = 1883
-app.config['MQTT_USERNAME'] = ''
-app.config['MQTT_PASSWORD'] = ''
+app.config['MQTT_BROKER_URL'] = uvsa_config['mqtt_server']['broker']
+app.config['MQTT_BROKER_PORT'] = uvsa_config['mqtt_server']['port']
+# app.config['MQTT_USERNAME'] = ''
+# app.config['MQTT_PASSWORD'] = ''
 app.config['MQTT_REFRESH_TIME'] = 0.2  # refresh time in seconds
 mqtt = Mqtt(app)
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
 # the best option based on installed packages.
-async_mode = "eventlet"
 socketio = SocketIO(app, async_mode="threading")
-mqtt.subscribe('#')
+mqtt.subscribe('uvsa/#')
 
 class WebApp:
     """
 
     """
 
-    def __init__(self):
+    def __init__(self, cardTopic, scannerTopic):
         """
 
         """
@@ -42,10 +48,27 @@ class WebApp:
         self.HoraInicio = 0
         self.lastCall = 0
         self.ExposureTime = 0
+        self.cardTopic = cardTopic
+        self.scannerTopic = scannerTopic
+        self.last_modo_operacion = 3 # Manera natural de iniciar el Operation Mode
 
-    def on_message (self, message):
-        #print(message.payload.decode("utf-8"), message.topic)
-        if message.topic == "uvsa/card":
+        ## Create a FRAM object.
+        spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
+        cs = digitalio.DigitalInOut(board.D5)
+        self.fram = adafruit_fram.FRAM_SPI(spi, cs)
+        # Leer el fram
+        hex0 = "{:02x}".format(int.from_bytes(self.fram[0], byteorder='big'))
+        hex1 = "{:02x}".format(int.from_bytes(self.fram[2], byteorder='big'))
+        hex2 = "{:02x}".format(int.from_bytes(self.fram[4], byteorder='big'))
+        hex3 = "{:02x}".format(int.from_bytes(self.fram[6], byteorder='big'))
+        # convertir a entero
+        full_hex_str = hex3 + hex2 + hex1 + hex0
+        segundos = int(full_hex_str, 16)
+        # Convertir a horas
+        self.horometro = segundos
+
+    def on_message(self, message):
+        if message.topic == self.cardTopic:
             self.on_card_message(message.payload.decode("utf-8"))
 
     def on_card_message(self, message):
@@ -54,9 +77,7 @@ class WebApp:
         uvsa_key=['msg_id', 'version', 'card', 'deadman1', 'deadman2', 'auto', 'pir1', 'pir2', 'pir3', 'pir4', 'mag1',
                   'mag2', 'lamp_byte', 'horometro', 'buzzer', 'operationMode', 'tiempoRestante', 'mask_byte', 'count_down',
                   'state_machine_status', 'total_time']
-
         decoded_data = []
-        last_modo_operacion = 3 # Manera natural de iniciar el Operation Mode
         try:
             decoded_data = message.split(":")[1][1:-2].split(',')
 
@@ -88,8 +109,9 @@ class WebApp:
             self.uvsa_dict['lampDeadman'] = self.uvsa_dict['lamp_byte'] & 0b01000000
             self.uvsa_dict['lampAuto'] = self.uvsa_dict['lamp_byte'] & 0b10000000
             # Checa si es necesario guardar la ultima rutina de sanitizacion en la bitacora
-            last_modo_operacion = self.create_log(self.uvsa_dict['operationMode'], last_modo_operacion)
+            self.last_modo_operacion = self.create_log(self.uvsa_dict['operationMode'])
             #  ToDo Un Horometro de verdad
+            self.uvsa_dict['horometro'] = self.horometro
 
             #print(self.uvsa_dict)
             pub = int(float(self.uvsa_dict['msg_id'])/100)
@@ -98,20 +120,49 @@ class WebApp:
                 socketio.emit('my_response', self.uvsa_dict, broadcast=True)
                 socketio.sleep(0.02)
 
-
-
-    @staticmethod
-    def incrementa_horometro(ExposureTime):
+    def incrementa_horometro(self):
         """
-        :param ExposureTime:
-        :type ExposureTime:
-        :return:
-        :rtype:
-        """
-        if math.floor(ExposureTime) > 0:
-            print("incrementa_horometro", ExposureTime)
 
-    def create_log(self, modo_operacion, last_modo_operacion):
+        """
+        if math.floor(self.ExposureTime) > 0: #para estar seguros que no es la primera iteracion -primeros 10 seg -
+            # Leer el fram
+            hex0 = "{:02x}".format(int.from_bytes(self.fram[0], byteorder='big'))
+            hex1 = "{:02x}".format(int.from_bytes(self.fram[2], byteorder='big'))
+            hex2 = "{:02x}".format(int.from_bytes(self.fram[4], byteorder='big'))
+            hex3 = "{:02x}".format(int.from_bytes(self.fram[6], byteorder='big'))
+
+            # convertir a entero
+            full_hex_str = hex3 + hex2 + hex1 + hex0
+            segundos = int(full_hex_str, 16)
+
+            # Agregar 10 segundos
+            segundos += 10
+
+            # Reconvertir a hex
+            full_hex = "{:08x}".format(segundos)
+            hex0 = full_hex[-2:]
+            hex1 = full_hex[-4:-2]
+            hex2 = full_hex[-6:-4]
+            hex3 = full_hex[:-6]
+
+            # Guardar el tiempo en la Fram
+            self.fram[0] = int(hex0, 16)
+            self.fram[2] = int(hex1, 16)
+            self.fram[4] = int(hex2, 16)
+            self.fram[6] = int(hex3, 16)
+            # Verificacion
+            # Leer el fram
+            hex0 = "{:02x}".format(int.from_bytes(self.fram[0], byteorder='big'))
+            hex1 = "{:02x}".format(int.from_bytes(self.fram[2], byteorder='big'))
+            hex2 = "{:02x}".format(int.from_bytes(self.fram[4], byteorder='big'))
+            hex3 = "{:02x}".format(int.from_bytes(self.fram[6], byteorder='big'))
+            # convertir a entero
+            full_hex_str = hex3 + hex2 + hex1 + hex0
+            segundos = int(full_hex_str, 16)
+            # Convertir a horas
+            self.horometro = segundos
+
+    def create_log(self, modo_operacion):
         """
         :param modo_operacion:
         :type modo_operacion:
@@ -120,13 +171,14 @@ class WebApp:
         :return:
         :rtype:
         """
-        if (modo_operacion == 1) and (last_modo_operacion == 2):
+
+        if (modo_operacion == 1) and (self.last_modo_operacion == 2):
             self.HoraInicio = datetime.now()
             self.lastCall = self.HoraInicio
             self.ExposureTime = 0
             self.log_entry = [self.uvsa_dict['date'], self.uvsa_dict['time'], "0", self.Ubicacion]
 
-        if (modo_operacion == 3) and (last_modo_operacion == 1):
+        if (modo_operacion == 3) and (self.last_modo_operacion == 1):
             if self.ExposureTime > 0:
                 self.log_entry[2] = str(math.floor(self.ExposureTime))
                 logManager.add_new_entry(self.log_entry)
@@ -144,18 +196,20 @@ class WebApp:
                 if self.uvsa_dict['state_machine_status'] == 2:
                     self.ExposureTime += delta_time.total_seconds()
                     if (self.ExposureTime % 10) < 0.2: # 0.2 Segundos ya que la frec del mesaje es de 5hz. Asi solo toma 1 msg cada 10 seg
-                        self.incrementa_horometro(self.ExposureTime)
+                        self.incrementa_horometro()
         except NameError:
             pass
         return modo_operacion
 
-
-my_webapp = WebApp()
+cardTopic = uvsa_config['powerCard']['mqtt_topic']
+scannerTopic = uvsa_config['codebarScanner']['mqtt_topic']
+my_webapp = WebApp(cardTopic, scannerTopic)
 
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
     my_webapp.on_message(message)
+
 
 @app.route('/')
 def index():
@@ -199,21 +253,10 @@ def acerca_info():
     socketio.emit('info_fabricacion', fabricacion_dict)
 
 
-# @socketio.on('connect')
-# def test_connect():
-#     #print("client connected")
-#     # with my_webapp.thread_lock:
-#     #     if my_webapp.thread is None:
-#     #         my_webapp.thread = socketio.start_background_task(my_webapp.background_serial_reader_thread())
-#     emit('my_response', {'data': 'Connected', 'count': 0})
-
-
 @socketio.on('startButton')
 def start_button(msg):
-    # ser.write((json.dumps(msg) + '\r\n').encode())
-
     # https://github.com/perrin7/ninjacape-mqtt-bridge/blob/master/ninjaCapeSerialMQTTBridge.py
-    print(msg)
+    mqtt.publish('uvsa/button', (json.dumps(msg) + '\r\n').encode())
 
 
 @socketio.on('set_dateTime')
