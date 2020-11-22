@@ -141,6 +141,8 @@ socket.on('my_response', function(message) {
         document.getElementById("buzzer").innerHTML = "<i class=\"fas fa-volume-up\" style='font-size:24px;color:green'>";
     }
 
+    /*Ubicacion scanner*/
+    document.getElementById("ubicacion").innerHTML = message.ubicacion;
     });
 window.onload = function() {
         socket.emit('connect');

@@ -47,6 +47,10 @@ var time_label = document.getElementById("time_tag");
 time_label.innerHTML = slider.value + " min."; // Display the default slider value
 var operationMode
 
+socket.on('scannerReading', function(message) {
+    alert("ID escaneado: " + message)
+})
+
 socket.on('my_response', function(message) {
     //console.log(arguments)
     document.getElementById("date").innerHTML = message.date;
@@ -63,7 +67,7 @@ socket.on('my_response', function(message) {
             break;
         case 2:
             document.getElementById("operationMode").innerHTML = "<i class='fas fa-sun' style='font-size:160%; color:purple'>";
-            document.getElementById("operationModeText").innerHTML = "Sanitizando";
+            document.getElementById("operationModeText").innerHTML = "Irradiando";
             break;
         case 3:
             document.getElementById("operationMode").innerHTML = "<i class='fas fa-users' style='font-size:160%; color:#ffbf00'>";
@@ -75,7 +79,7 @@ socket.on('my_response', function(message) {
             break;
         case 5:
             document.getElementById("operationMode").innerHTML = "<i class='fas fa-sun' style='font-size:160%; color:purple'>";
-            document.getElementById("operationModeText").innerHTML = "Sanitizando - Manual";
+            document.getElementById("operationModeText").innerHTML = "Irradiando - Manual";
             break;
         case 6:
             document.getElementById("operationMode").innerHTML = "<i class='fas fa-hand-paper' style='font-size:160%; color:#1d1f29'>";

@@ -9,6 +9,7 @@ from datetime import datetime
 import json
 import yaml
 import logManager
+import time
 
 #FRAM - Horometro
 import board
@@ -44,12 +45,14 @@ class WebApp:
         # Control Globals
         self.log_entry = []
         self.uvsa_dict = {}
-        self.Ubicacion = "tst"
+        self.Ubicacion = "NA"
         self.HoraInicio = 0
         self.lastCall = 0
         self.ExposureTime = 0
         self.cardTopic = cardTopic
         self.scannerTopic = scannerTopic
+        self.scannerReading = ''
+        self.scannerTime = time.time()
         self.last_modo_operacion = 3 # Manera natural de iniciar el Operation Mode
 
         ## Create a FRAM object.
@@ -70,6 +73,12 @@ class WebApp:
     def on_message(self, message):
         if message.topic == self.cardTopic:
             self.on_card_message(message.payload.decode("utf-8"))
+
+        if message.topic == self.scannerTopic:
+            self.scannerTime = time.time()
+            self.scannerReading = message.payload.decode("utf-8")
+            socketio.emit('scannerReading', self.scannerReading)
+
 
     def on_card_message(self, message):
         """Example of how to send server generated events to clients."""
@@ -112,6 +121,7 @@ class WebApp:
             self.last_modo_operacion = self.create_log(self.uvsa_dict['operationMode'])
             #  ToDo Un Horometro de verdad
             self.uvsa_dict['horometro'] = self.horometro
+            self.uvsa_dict['ubicacion'] = self.scannerReading
 
             #print(self.uvsa_dict)
             pub = int(float(self.uvsa_dict['msg_id'])/100)
@@ -172,11 +182,15 @@ class WebApp:
         :rtype:
         """
 
+
         if (modo_operacion == 1) and (self.last_modo_operacion == 2):
             self.HoraInicio = datetime.now()
             self.lastCall = self.HoraInicio
             self.ExposureTime = 0
+            self.Ubicacion = self.scannerReading
             self.log_entry = [self.uvsa_dict['date'], self.uvsa_dict['time'], "0", self.Ubicacion]
+            self.Ubicacion = "NA"
+            self.scannerReading = "NA"
 
         if (modo_operacion == 3) and (self.last_modo_operacion == 1):
             if self.ExposureTime > 0:
@@ -203,6 +217,7 @@ class WebApp:
 
 cardTopic = uvsa_config['powerCard']['mqtt_topic']
 scannerTopic = uvsa_config['codebarScanner']['mqtt_topic']
+scanner_reading_timeout = uvsa_config['codebarScanner']['reading_timeout']
 my_webapp = WebApp(cardTopic, scannerTopic)
 
 
@@ -257,6 +272,9 @@ def acerca_info():
 def start_button(msg):
     # https://github.com/perrin7/ninjacape-mqtt-bridge/blob/master/ninjaCapeSerialMQTTBridge.py
     mqtt.publish('uvsa/button', (json.dumps(msg) + '\r\n').encode())
+    if not(msg['time'] == [0, 0]): #Si el boton es el boton de timer
+        if (time.time() - my_webapp.scannerTime) > scanner_reading_timeout: # tiempo en segundos
+            my_webapp.scannerReading = "NA"
 
 
 @socketio.on('set_dateTime')
