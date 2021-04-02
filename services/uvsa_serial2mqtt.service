@@ -1,0 +1,14 @@
+#uvsa_main.service
+[Unit]
+Description=serial2mqttt bridge
+After=network.target
+
+[Service]
+User=uv
+Group=uv
+WorkingDirectory=/home/uv/webapp/mqtt_interfaces/mqtt_PowerCard
+ExecStart=/home/uv/webapp/mqtt_interfaces/mqtt_PowerCard/serialBridge.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

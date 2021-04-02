@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serve uvsa-group main page
+After=network.target
+
+[Service]
+User=uv
+Group=uv
+WorkingDirectory=/home/uv/webapp
+ExecStart=/usr/local/bin/gunicorn --worker-class eventlet -w 1 -b 0.0.0.0:5000 main:app
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

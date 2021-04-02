@@ -1,0 +1,13 @@
+[Unit]
+Description=serial2mqttt bridge
+After=network.target
+
+[Service]
+User=uv
+Group=uv
+WorkingDirectory=/home/uv/webapp/mqtt_interfaces/mqtt_Barcode
+ExecStart=/home/uv/webapp/mqtt_interfaces/mqtt_Barcode/barcode_reader2.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
